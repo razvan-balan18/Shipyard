@@ -100,11 +100,11 @@ jobs:
           context: .
           file: docker/api.Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/api:latest
+          tags: ghcr.io/${{ github.repository_owner }}/shipyard/api:latest
 
       - uses: docker/build-push-action@v5
         with:
           context: .
           file: docker/web.Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/web:latest
+          tags: ghcr.io/${{ github.repository_owner }}/shipyard/web:latest
