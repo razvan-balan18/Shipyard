@@ -71,9 +71,9 @@ jobs:
           pnpm --filter api exec npx prisma migrate deploy
           pnpm --filter api test
 
-      # Run frontend tests (Vitest — use --run for CI, no --watch)
+      # Run frontend tests (ng test with @angular/build:unit-test runs once and exits)
       - name: Run frontend tests
-        run: pnpm --filter web test --run
+        run: pnpm --filter web test
 
       # Build everything (shared → api + web via Turborepo)
       - run: pnpm build
