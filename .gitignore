@@ -36,4 +36,3 @@ coverage/
 *.log
 npm-debug.log*
 .claude
-CLAUDE.md
