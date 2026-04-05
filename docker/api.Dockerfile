@@ -1,6 +1,11 @@
 # ── Stage 1: Build ───────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 
+# DATABASE_URL is required by prisma.config.ts at load time even though
+# prisma generate does not connect to the database
+ARG DATABASE_URL=postgresql://localhost/dummy
+ENV DATABASE_URL=$DATABASE_URL
+
 RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
 WORKDIR /app
