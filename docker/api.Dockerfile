@@ -42,7 +42,7 @@ WORKDIR /app
 # pnpm deploy creates a self-contained production bundle for one package
 # (resolves workspace:* deps, installs only prod dependencies)
 COPY --from=builder /app ./
-RUN pnpm deploy --filter api --prod /app/deploy
+RUN pnpm deploy --filter api --prod --legacy /app/deploy
 
 # ── Stage 3: Runtime ──────────────────────────────────────────────────────────
 FROM node:22-alpine AS runtime
