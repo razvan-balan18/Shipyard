@@ -8,13 +8,253 @@ datasource db {
   provider = "postgresql"
 }
 
-// === Models will go here in the next phase ===
-// For now, just verify the setup works with a placeholder:
+enum DeploymentStatus {
+  PENDING
+  IN_PROGRESS
+  SUCCESS
+  FAILED
+  ROLLED_BACK
+}
+
+enum EnvironmentStatus {
+  HEALTHY
+  DEGRADED
+  DOWN
+  UNKNOWN
+}
+
+enum PipelineStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum RepositoryProvider {
+  GITHUB
+  GITLAB
+  BITBUCKET
+}
+
+enum ChannelType {
+  SLACK
+  DISCORD
+  WEBHOOK
+}
+
+model Team {
+  id            String   @id @default(uuid())
+  name          String
+  slug          String   @unique
+  githubOrgSlug String?  @map("github_org_slug")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  users                User[]
+  services             Service[]
+  environments         Environment[]
+  deployments          Deployment[]
+  pipelineRuns         PipelineRun[]
+  notifications        Notification[]
+  notificationChannels NotificationChannel[]
+  auditLogs            AuditLog[]
+
+  @@map("teams")
+}
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
+  id                String   @id @default(uuid())
+  email             String   @unique
+  passwordHash      String?  @map("password_hash")
+  displayName       String   @map("display_name")
+  avatarUrl         String?  @map("avatar_url")
+  githubUsername     String?  @map("github_username")
+  githubAccessToken  String?  @map("github_access_token")
+  role              UserRole @default(MEMBER)
+  teamId            String   @map("team_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  team          Team           @relation(fields: [teamId], references: [id])
+  notifications Notification[]
+  auditLogs     AuditLog[]
 
   @@map("users")
+}
+
+model Service {
+  id                 String             @id @default(uuid())
+  name               String
+  displayName        String             @map("display_name")
+  description        String?
+  repositoryUrl      String             @map("repository_url")
+  repositoryProvider RepositoryProvider @map("repository_provider")
+  defaultBranch      String             @default("main") @map("default_branch")
+  dockerImage        String?            @map("docker_image")
+  teamId             String             @map("team_id")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  team         Team          @relation(fields: [teamId], references: [id])
+  environments Environment[]
+  deployments  Deployment[]
+  pipelineRuns PipelineRun[]
+
+  @@unique([name, teamId])
+  @@map("services")
+}
+
+model Environment {
+  id                  String            @id @default(uuid())
+  name                String
+  displayName         String            @map("display_name")
+  order               Int               @default(0)
+  url                 String?
+  healthCheckUrl      String?           @map("health_check_url")
+  healthCheckInterval Int               @default(30) @map("health_check_interval")
+  currentDeploymentId String?           @map("current_deployment_id")
+  status              EnvironmentStatus @default(UNKNOWN)
+  lastHealthCheckAt   DateTime?         @map("last_health_check_at")
+  serviceId           String            @map("service_id")
+  teamId              String            @map("team_id")
+  createdAt           DateTime          @default(now()) @map("created_at")
+  updatedAt           DateTime          @updatedAt @map("updated_at")
+
+  service            Service             @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  team               Team                @relation(fields: [teamId], references: [id])
+  currentDeployment  Deployment?         @relation("CurrentDeployment", fields: [currentDeploymentId], references: [id])
+  deployments        Deployment[]        @relation("EnvironmentDeployments")
+  healthCheckResults HealthCheckResult[]
+
+  @@unique([name, serviceId])
+  @@map("environments")
+}
+
+model Deployment {
+  id            String           @id @default(uuid())
+  status        DeploymentStatus @default(PENDING)
+  commitSha     String           @map("commit_sha")
+  commitMessage String           @map("commit_message")
+  branch        String
+  imageTag      String?          @map("image_tag")
+  duration      Int?
+  startedAt     DateTime         @map("started_at")
+  finishedAt    DateTime?        @map("finished_at")
+  triggeredBy   String           @map("triggered_by")
+  metadata      Json?
+  serviceId     String           @map("service_id")
+  environmentId String           @map("environment_id")
+  pipelineRunId String?          @map("pipeline_run_id")
+  teamId        String           @map("team_id")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  service     Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  environment Environment  @relation("EnvironmentDeployments", fields: [environmentId], references: [id])
+  pipelineRun PipelineRun? @relation(fields: [pipelineRunId], references: [id])
+  team        Team         @relation(fields: [teamId], references: [id])
+
+  currentForEnvironments Environment[] @relation("CurrentDeployment")
+
+  @@map("deployments")
+}
+
+model PipelineRun {
+  id           String         @id @default(uuid())
+  externalId   String         @map("external_id")
+  provider     RepositoryProvider
+  status       PipelineStatus @default(PENDING)
+  branch       String
+  commitSha    String         @map("commit_sha")
+  workflowName String         @map("workflow_name")
+  url          String
+  startedAt    DateTime       @map("started_at")
+  finishedAt   DateTime?      @map("finished_at")
+  duration     Int?
+  stages       Json?
+  serviceId    String         @map("service_id")
+  teamId       String         @map("team_id")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  service     Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  team        Team         @relation(fields: [teamId], references: [id])
+  deployments Deployment[]
+
+  @@unique([externalId, provider])
+  @@map("pipeline_runs")
+}
+
+model HealthCheckResult {
+  id            String            @id @default(uuid())
+  status        EnvironmentStatus
+  responseTime  Int?              @map("response_time")
+  statusCode    Int?              @map("status_code")
+  errorMessage  String?           @map("error_message")
+  environmentId String            @map("environment_id")
+  createdAt     DateTime          @default(now()) @map("created_at")
+
+  environment Environment @relation(fields: [environmentId], references: [id], onDelete: Cascade)
+
+  @@index([environmentId, createdAt])
+  @@map("health_check_results")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  metadata  Json?
+  userId    String?  @map("user_id")
+  teamId    String   @map("team_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+  team Team  @relation(fields: [teamId], references: [id])
+
+  @@index([teamId, createdAt])
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+model NotificationChannel {
+  id        String      @id @default(uuid())
+  type      ChannelType
+  name      String
+  config    Json
+  events    String[]
+  enabled   Boolean     @default(true)
+  teamId    String      @map("team_id")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@map("notification_channels")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String
+  details   Json?
+  ipAddress String?  @map("ip_address")
+  userId    String   @map("user_id")
+  teamId    String   @map("team_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@index([teamId, createdAt])
+  @@map("audit_logs")
 }
