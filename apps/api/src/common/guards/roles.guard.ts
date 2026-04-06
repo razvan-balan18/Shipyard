@@ -24,7 +24,9 @@ export class RolesGuard implements CanActivate {
     // If no @Roles() decorator, allow access
     if (!requiredRoles) return true;
 
-    const { user } = context.switchToHttp().getRequest();
+    const { user } = context
+      .switchToHttp()
+      .getRequest<{ user?: { role: UserRole } }>();
     if (!user) return false;
     return requiredRoles.includes(user.role);
   }

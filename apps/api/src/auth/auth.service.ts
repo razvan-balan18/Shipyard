@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { User, Team } from '../generated/prisma/client';
+import { User, Team, Prisma } from '../generated/prisma/client';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
@@ -52,9 +52,12 @@ export class AuthService {
       });
 
       return this.generateAuthResponse(result.user, result.team.name);
-    } catch (e: any) {
-      if (e?.code === 'P2002') {
-        const target = e?.meta?.target as string[] | undefined;
+    } catch (e: unknown) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        const target = e.meta?.target as string[] | undefined;
         if (target?.includes('email'))
           throw new ConflictException('Email already registered');
         if (target?.includes('slug'))
@@ -87,7 +90,7 @@ export class AuthService {
     return this.generateAuthResponse(user, user.team.name);
   }
 
-  async validateUserById(userId: string) {
+  validateUserById(userId: string) {
     return this.prisma.user.findUnique({
       where: { id: userId },
       include: { team: true },
