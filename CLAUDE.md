@@ -265,6 +265,18 @@ The project is built incrementally. Each phase produces a working, demo-able pro
 
 ## Claude Code Guidance
 
+### Memory
+
+Project memory lives in `.claude/memory/`. Always read `MEMORY.md` at the start of a session to load context.
+
+After completing a phase or significant feature, update the memory files:
+
+- `project_state.md` — mark what's done, update what's next
+- `user_profile.md` — if anything new was learned about the user's preferences or knowledge
+- `feedback.md` — if the user corrected an approach or confirmed a non-obvious one
+
+### Codebase exploration
+
 When exploring the codebase, skip these directories — they are large, auto-generated, or irrelevant to source code tasks:
 
 - `**/node_modules/` — package dependencies
