@@ -42,19 +42,19 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Lint everything
-      - run: pnpm lint
-
       # Build shared types first (backend + frontend depend on this)
       - run: pnpm --filter @shipyard/shared build
 
-      # Generate Prisma client (gitignored — must run in CI before compiling)
-      # DATABASE_URL is required by prisma.config.ts at load time even though
-      # generate doesn't connect to the database
+      # Generate Prisma client (gitignored — must run before lint so TypeScript
+      # can resolve Prisma types. DATABASE_URL is required by prisma.config.ts
+      # at load time even though generate doesn't connect to the database)
       - name: Generate Prisma client
         env:
           DATABASE_URL: postgresql://localhost/dummy
         run: pnpm --filter api exec npx prisma generate
+
+      # Lint everything
+      - run: pnpm lint
 
       # Run backend tests
       - name: Run API tests
