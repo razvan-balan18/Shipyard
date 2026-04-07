@@ -10,6 +10,12 @@ import {
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { Request } from 'express';
+import type {
+  DeploymentPayload,
+  DeploymentStatusPayload,
+  PushPayload,
+  WorkflowRunPayload,
+} from './github.service';
 import { GitHubService } from './github.service';
 
 interface RawRequest extends Request {
@@ -30,7 +36,7 @@ export class GitHubWebhookController {
     @Headers('x-github-event') event: string,
     @Headers('x-hub-signature-256') signature: string,
     @Req() req: RawRequest,
-    @Body() payload: any,
+    @Body() payload: unknown,
   ) {
     // Step 1: Verify the webhook signature
     // This ensures the webhook actually came from GitHub, not an attacker
@@ -69,16 +75,20 @@ export class GitHubWebhookController {
 
     switch (event) {
       case 'workflow_run':
-        await this.githubService.handleWorkflowRun(payload);
+        await this.githubService.handleWorkflowRun(
+          payload as WorkflowRunPayload,
+        );
         break;
       case 'deployment':
-        await this.githubService.handleDeploymentEvent(payload);
+        this.githubService.handleDeploymentEvent(payload as DeploymentPayload);
         break;
       case 'deployment_status':
-        await this.githubService.handleDeploymentStatusEvent(payload);
+        this.githubService.handleDeploymentStatusEvent(
+          payload as DeploymentStatusPayload,
+        );
         break;
       case 'push':
-        await this.githubService.handlePushEvent(payload);
+        this.githubService.handlePushEvent(payload as PushPayload);
         break;
       default:
         this.logger.log(

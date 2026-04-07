@@ -6,9 +6,10 @@ import { Injectable, Logger } from '@nestjs/common';
 export class DockerService {
   private logger = new Logger('DockerService');
 
-  async getContainerStatus(
-    containerId: string,
-  ): Promise<{ running: boolean; status: string }> {
+  getContainerStatus(containerId: string): {
+    running: boolean;
+    status: string;
+  } {
     // TODO Phase 5: implement via dockerode
     this.logger.debug(`getContainerStatus called for ${containerId}`);
     return { running: false, status: 'unknown' };

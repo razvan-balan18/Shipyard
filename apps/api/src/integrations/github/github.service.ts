@@ -1,6 +1,43 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { PipelineStatus } from '../../generated/prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EventsGateway } from '../../websocket/events.gateway';
+
+export interface WorkflowRun {
+  id: number;
+  status: string;
+  conclusion: string | null;
+  head_branch: string;
+  head_sha: string;
+  name: string;
+  html_url: string;
+  run_started_at: string;
+  updated_at: string | null;
+}
+
+export interface Repository {
+  html_url: string;
+  full_name: string;
+}
+
+export interface WorkflowRunPayload {
+  workflow_run: WorkflowRun;
+  repository: Repository;
+}
+
+export interface DeploymentPayload {
+  repository: Repository;
+  deployment: { environment: string };
+}
+
+export interface DeploymentStatusPayload {
+  deployment_status: { state: string };
+}
+
+export interface PushPayload {
+  repository: Repository;
+  ref: string;
+}
 
 @Injectable()
 export class GitHubService {
@@ -11,7 +48,7 @@ export class GitHubService {
     private eventsGateway: EventsGateway,
   ) {}
 
-  async handleWorkflowRun(payload: any) {
+  async handleWorkflowRun(payload: WorkflowRunPayload) {
     const { workflow_run, repository } = payload;
 
     // Find the service that matches this repository
@@ -29,15 +66,15 @@ export class GitHubService {
     }
 
     // Map GitHub's status to our enum
-    const statusMap: Record<string, string> = {
-      queued: 'PENDING',
-      in_progress: 'RUNNING',
+    const statusMap: Record<string, PipelineStatus> = {
+      queued: PipelineStatus.PENDING,
+      in_progress: PipelineStatus.RUNNING,
       completed:
         workflow_run.conclusion === 'success'
-          ? 'SUCCESS'
+          ? PipelineStatus.SUCCESS
           : workflow_run.conclusion === 'cancelled'
-            ? 'CANCELLED'
-            : 'FAILED',
+            ? PipelineStatus.CANCELLED
+            : PipelineStatus.FAILED,
     };
 
     // Upsert the pipeline run (create if new, update if existing)
@@ -51,7 +88,7 @@ export class GitHubService {
       create: {
         externalId: String(workflow_run.id),
         provider: 'GITHUB',
-        status: (statusMap[workflow_run.status] ?? 'FAILED') as any,
+        status: statusMap[workflow_run.status] ?? PipelineStatus.FAILED,
         branch: workflow_run.head_branch,
         commitSha: workflow_run.head_sha,
         workflowName: workflow_run.name,
@@ -64,7 +101,7 @@ export class GitHubService {
         teamId: service.teamId,
       },
       update: {
-        status: (statusMap[workflow_run.status] ?? 'FAILED') as any,
+        status: statusMap[workflow_run.status] ?? PipelineStatus.FAILED,
         finishedAt: workflow_run.updated_at
           ? new Date(workflow_run.updated_at)
           : null,
@@ -91,7 +128,7 @@ export class GitHubService {
     );
   }
 
-  async handleDeploymentEvent(payload: any) {
+  handleDeploymentEvent(payload: DeploymentPayload) {
     const repo = String(payload.repository?.full_name ?? 'unknown').slice(
       0,
       200,
@@ -105,7 +142,7 @@ export class GitHubService {
     // This integrates with teams using GitHub's deployment API
   }
 
-  async handleDeploymentStatusEvent(payload: any) {
+  handleDeploymentStatusEvent(payload: DeploymentStatusPayload) {
     const state = String(payload.deployment_status?.state ?? 'unknown').slice(
       0,
       50,
@@ -114,7 +151,7 @@ export class GitHubService {
     // Update deployment status based on GitHub's deployment status events
   }
 
-  async handlePushEvent(payload: any) {
+  handlePushEvent(payload: PushPayload) {
     const repo = String(payload.repository?.full_name ?? 'unknown').slice(
       0,
       200,
