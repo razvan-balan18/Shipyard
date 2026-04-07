@@ -1,65 +1,73 @@
 // === Enums ===
 
-export enum DeploymentStatus {
-  PENDING = 'PENDING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
-  ROLLED_BACK = 'ROLLED_BACK',
-}
+export const DeploymentStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK',
+} as const;
+export type DeploymentStatus = (typeof DeploymentStatus)[keyof typeof DeploymentStatus];
 
-export enum EnvironmentStatus {
-  HEALTHY = 'HEALTHY',
-  DEGRADED = 'DEGRADED',
-  DOWN = 'DOWN',
-  UNKNOWN = 'UNKNOWN',
-}
+export const EnvironmentStatus = {
+  HEALTHY: 'HEALTHY',
+  DEGRADED: 'DEGRADED',
+  DOWN: 'DOWN',
+  UNKNOWN: 'UNKNOWN',
+} as const;
+export type EnvironmentStatus = (typeof EnvironmentStatus)[keyof typeof EnvironmentStatus];
 
-export enum PipelineStatus {
-  PENDING = 'PENDING',
-  RUNNING = 'RUNNING',
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
-  CANCELLED = 'CANCELLED',
-}
+export const PipelineStatus = {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED',
+} as const;
+export type PipelineStatus = (typeof PipelineStatus)[keyof typeof PipelineStatus];
 
-export enum UserRole {
-  OWNER = 'OWNER',
-  ADMIN = 'ADMIN',
-  MEMBER = 'MEMBER',
-  VIEWER = 'VIEWER',
-}
+export const UserRole = {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER',
+  VIEWER: 'VIEWER',
+} as const;
+export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
-export enum NotificationType {
-  DEPLOYMENT_SUCCESS = 'DEPLOYMENT_SUCCESS',
-  DEPLOYMENT_FAILED = 'DEPLOYMENT_FAILED',
-  HEALTH_DOWN = 'HEALTH_DOWN',
-  HEALTH_RECOVERED = 'HEALTH_RECOVERED',
-  ROLLBACK = 'ROLLBACK',
-}
+export const NotificationType = {
+  DEPLOYMENT_SUCCESS: 'DEPLOYMENT_SUCCESS',
+  DEPLOYMENT_FAILED: 'DEPLOYMENT_FAILED',
+  HEALTH_DOWN: 'HEALTH_DOWN',
+  HEALTH_RECOVERED: 'HEALTH_RECOVERED',
+  ROLLBACK: 'ROLLBACK',
+} as const;
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType];
 
-export enum ChannelType {
-  SLACK = 'SLACK',
-  DISCORD = 'DISCORD',
-  WEBHOOK = 'WEBHOOK',
-}
+export const ChannelType = {
+  SLACK: 'SLACK',
+  DISCORD: 'DISCORD',
+  WEBHOOK: 'WEBHOOK',
+} as const;
+export type ChannelType = (typeof ChannelType)[keyof typeof ChannelType];
 
-export enum RepositoryProvider {
-  GITHUB = 'GITHUB',
-  GITLAB = 'GITLAB',
-  BITBUCKET = 'BITBUCKET',
-}
+export const RepositoryProvider = {
+  GITHUB: 'GITHUB',
+  GITLAB: 'GITLAB',
+  BITBUCKET: 'BITBUCKET',
+} as const;
+export type RepositoryProvider = (typeof RepositoryProvider)[keyof typeof RepositoryProvider];
 
 // === WebSocket Event Types ===
 
-export enum WsEventType {
-  DEPLOYMENT_STARTED = 'deployment:started',
-  DEPLOYMENT_COMPLETED = 'deployment:completed',
-  DEPLOYMENT_FAILED = 'deployment:failed',
-  HEALTH_CHECK_UPDATED = 'health:updated',
-  PIPELINE_UPDATED = 'pipeline:updated',
-  NOTIFICATION_NEW = 'notification:new',
-}
+export const WsEventType = {
+  DEPLOYMENT_STARTED: 'deployment:started',
+  DEPLOYMENT_COMPLETED: 'deployment:completed',
+  DEPLOYMENT_FAILED: 'deployment:failed',
+  HEALTH_CHECK_UPDATED: 'health:updated',
+  PIPELINE_UPDATED: 'pipeline:updated',
+  NOTIFICATION_NEW: 'notification:new',
+} as const;
+export type WsEventType = (typeof WsEventType)[keyof typeof WsEventType];
 
 export interface WsEvent<T = unknown> {
   type: WsEventType;
