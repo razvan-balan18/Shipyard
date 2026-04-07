@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ServicesModule } from './services/services.module';
 import { WebsocketModule } from './websocket/websocket.module';
+import { DeploymentsModule } from './deployments/deployments.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { WebsocketModule } from './websocket/websocket.module';
     AuthModule,
     ServicesModule,
     WebsocketModule,
+    DeploymentsModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
