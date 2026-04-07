@@ -45,10 +45,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return;
       }
 
-      // Verify the JWT with explicit algorithm to prevent alg:none attacks
-      const payload = this.jwtService.verify<JwtPayload>(token, {
-        algorithms: ['HS256'],
-      });
+      // Verify the JWT — algorithm pinned to HS256 via WebsocketModule's JwtModule config
+      const payload = this.jwtService.verify<JwtPayload>(token);
 
       // Validate teamId before joining room
       if (typeof payload.teamId !== 'string' || !payload.teamId) {
