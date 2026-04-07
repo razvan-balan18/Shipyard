@@ -1,10 +1,18 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 
+const logger = new Logger('Bootstrap');
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  if (!process.env.CORS_ORIGIN) {
+    logger.warn(
+      'CORS_ORIGIN is not set — falling back to http://localhost:4200. Set this in production.',
+    );
+  }
 
   app.use(helmet());
 
