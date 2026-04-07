@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { EventsGateway } from '../websocket/events.gateway';
 import { WsEventType, DeploymentStatus } from '@shipyard/shared';
+import { Prisma } from '../generated/prisma/client';
 
 @Injectable()
 export class DeploymentsService {
@@ -25,7 +26,7 @@ export class DeploymentsService {
       offset?: number;
     },
   ) {
-    const where: any = { teamId };
+    const where: Prisma.DeploymentWhereInput = { teamId };
     if (filters?.serviceId) where.serviceId = filters.serviceId;
     if (filters?.environmentId) where.environmentId = filters.environmentId;
     if (
