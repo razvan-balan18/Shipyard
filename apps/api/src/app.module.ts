@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ServicesModule } from './services/services.module';
 import { WebsocketModule } from './websocket/websocket.module';
 import { DeploymentsModule } from './deployments/deployments.module';
+import { IntegrationsModule } from './integrations/integrations.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DeploymentsModule } from './deployments/deployments.module';
     ServicesModule,
     WebsocketModule,
     DeploymentsModule,
+    IntegrationsModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
