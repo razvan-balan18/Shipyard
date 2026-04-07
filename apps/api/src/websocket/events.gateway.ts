@@ -8,6 +8,12 @@ import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { Logger } from '@nestjs/common';
 
+interface JwtPayload {
+  sub: string;
+  teamId: string;
+  [key: string]: unknown;
+}
+
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN,
@@ -29,8 +35,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       // Extract JWT from the connection handshake
       const authHeader = client.handshake.headers?.authorization;
-      const token =
-        client.handshake.auth?.token ||
+      const token: string | undefined =
+        (client.handshake.auth?.token as string | undefined) ||
         (authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : undefined);
 
       if (!token) {
@@ -40,7 +46,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
 
       // Verify the JWT with explicit algorithm to prevent alg:none attacks
-      const payload = this.jwtService.verify(token, { algorithms: ['HS256'] });
+      const payload = this.jwtService.verify<JwtPayload>(token, {
+        algorithms: ['HS256'],
+      });
 
       // Validate teamId before joining room
       if (typeof payload.teamId !== 'string' || !payload.teamId) {
@@ -51,7 +59,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       // Join the client to their team's room
       // This way, events are only broadcast to the relevant team
-      client.join(`team:${payload.teamId}`);
+      await client.join(`team:${payload.teamId}`);
 
       this.logger.log(`Client ${client.id} joined team:${payload.teamId}`);
     } catch (error) {
