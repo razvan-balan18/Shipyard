@@ -7,7 +7,7 @@ import { AppModule } from './app.module';
 const logger = new Logger('Bootstrap');
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
   app.useWebSocketAdapter(new IoAdapter(app));
 
   if (!process.env.CORS_ORIGIN) {
