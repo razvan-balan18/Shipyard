@@ -57,10 +57,13 @@ export class AuthService {
         e instanceof Prisma.PrismaClientKnownRequestError &&
         e.code === 'P2002'
       ) {
-        const target = e.meta?.target as string[] | undefined;
-        if (target?.includes('email'))
+        const fields =
+          (e.meta?.target as string[] | undefined) ??
+          (e.meta?.constraint as { fields?: string[] } | undefined)?.fields ??
+          [];
+        if (fields.includes('email'))
           throw new ConflictException('Email already registered');
-        if (target?.includes('slug'))
+        if (fields.includes('slug'))
           throw new ConflictException('A team with that name already exists');
       }
       throw e;
