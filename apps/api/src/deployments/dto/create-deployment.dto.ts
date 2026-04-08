@@ -31,7 +31,7 @@ export class CreateDeploymentDto {
   @MaxLength(200)
   imageTag?: string;
 
-  @IsString()
+  @IsUUID()
   @IsOptional()
   pipelineRunId?: string;
 }

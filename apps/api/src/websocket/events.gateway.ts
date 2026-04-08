@@ -16,7 +16,7 @@ interface JwtPayload {
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN ?? 'http://localhost:4200',
     credentials: true,
   },
   // Namespace keeps WebSocket traffic separate from the REST API

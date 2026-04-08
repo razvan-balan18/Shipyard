@@ -11,6 +11,11 @@ import { DeploymentsModule } from './deployments/deployments.module';
 import { IntegrationsModule } from './integrations/integrations.module';
 import { HealthChecksModule } from './health-checks/health-checks.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { EnvironmentsModule } from './environments/environments.module';
+import { UsersModule } from './users/users.module';
+import { TeamsModule } from './teams/teams.module';
+import { PipelinesModule } from './pipelines/pipelines.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -33,6 +38,11 @@ import { NotificationsModule } from './notifications/notifications.module';
     IntegrationsModule,
     HealthChecksModule,
     NotificationsModule,
+    EnvironmentsModule,
+    UsersModule,
+    TeamsModule,
+    PipelinesModule,
+    AnalyticsModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
