@@ -39,7 +39,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
       method: request.method,
       message,
       // Only include stack trace for 500 errors
-      ...(status >= 500 && exception instanceof Error
+      ...(status >= HttpStatus.INTERNAL_SERVER_ERROR &&
+      exception instanceof Error
         ? { stack: exception.stack }
         : {}),
     });
