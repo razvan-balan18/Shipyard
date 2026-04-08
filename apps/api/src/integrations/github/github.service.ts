@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PipelineStatus } from '../../generated/prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EventsGateway } from '../../websocket/events.gateway';
+import { WsEventType } from '@shipyard/shared';
 
 export interface WorkflowRun {
   id: number;
@@ -123,7 +124,7 @@ export class GitHubService {
     // Broadcast real-time update
     this.eventsGateway.emitToTeam(
       service.teamId,
-      'pipeline:updated',
+      WsEventType.PIPELINE_UPDATED,
       pipelineRun,
     );
   }

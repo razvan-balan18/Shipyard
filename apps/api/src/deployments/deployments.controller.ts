@@ -38,8 +38,8 @@ export class DeploymentsController {
       serviceId,
       environmentId,
       status,
-      limit: limit ? Math.min(parseInt(limit, 10), 100) : undefined,
-      offset: offset ? parseInt(offset, 10) : undefined,
+      limit: limit ? Math.min(parseInt(limit, 10) || 50, 100) : undefined,
+      offset: offset ? parseInt(offset, 10) || 0 : undefined,
     });
   }
 
