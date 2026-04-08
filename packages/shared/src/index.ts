@@ -197,3 +197,44 @@ export interface AuthResponse {
     teamName: string;
   };
 }
+
+// === Notification Types ===
+
+export interface NotificationSummary {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  read: boolean;
+  metadata: Record<string, unknown> | null;
+  userId: string | null;
+  teamId: string;
+  createdAt: string;
+}
+
+export interface NotificationChannelSummary {
+  id: string;
+  type: ChannelType;
+  name: string;
+  config: Record<string, unknown>;
+  events: string[];
+  enabled: boolean;
+  teamId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateNotificationChannelRequest {
+  type: ChannelType;
+  name: string;
+  config: Record<string, unknown>;
+  events: string[];
+  enabled?: boolean;
+}
+
+export interface UpdateNotificationChannelRequest {
+  name?: string;
+  config?: Record<string, unknown>;
+  events?: string[];
+  enabled?: boolean;
+}

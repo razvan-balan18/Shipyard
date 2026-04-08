@@ -10,6 +10,7 @@ import { WebsocketModule } from './websocket/websocket.module';
 import { DeploymentsModule } from './deployments/deployments.module';
 import { IntegrationsModule } from './integrations/integrations.module';
 import { HealthChecksModule } from './health-checks/health-checks.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { HealthChecksModule } from './health-checks/health-checks.module';
     DeploymentsModule,
     IntegrationsModule,
     HealthChecksModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
