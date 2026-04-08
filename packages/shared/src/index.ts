@@ -130,6 +130,28 @@ export interface PipelineStage {
   duration: number | null;
 }
 
+export interface HealthCheckResultSummary {
+  id: string;
+  status: EnvironmentStatus;
+  responseTime: number | null;
+  statusCode: number | null;
+  errorMessage: string | null;
+  environmentId: string;
+  createdAt: string;
+}
+
+export interface EnvironmentHealthSummary {
+  environmentId: string;
+  environmentName: string;
+  serviceId: string;
+  serviceName: string;
+  status: EnvironmentStatus;
+  lastCheckAt: string | null;
+  healthCheckUrl: string | null;
+  healthCheckInterval: number;
+  lastResult: HealthCheckResultSummary | null;
+}
+
 // === API Request Types ===
 
 export interface CreateServiceRequest {
