@@ -53,17 +53,33 @@ export class AuthService {
 
       return this.generateAuthResponse(result.user, result.team.name);
     } catch (e: unknown) {
-      if (
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        e.code === 'P2002'
-      ) {
-        const fields =
-          (e.meta?.target as string[] | undefined) ??
-          (e.meta?.constraint as { fields?: string[] } | undefined)?.fields ??
-          [];
-        if (fields.includes('email'))
+      // Prisma 7 + adapter-pg does NOT put the field in meta.target.
+      // The constraint info lives at meta.driverAdapterError.cause.constraint.fields.
+      // Duck-type on .code and fall back to message-string matching.
+      const err = e as {
+        code?: string;
+        message?: string;
+        meta?: {
+          target?: unknown;
+          driverAdapterError?: {
+            cause?: { constraint?: { fields?: string[] } };
+          };
+        };
+      };
+      if (err.code === 'P2002') {
+        const adapterFields =
+          err.meta?.driverAdapterError?.cause?.constraint?.fields ?? [];
+        const legacyTarget = err.meta?.target;
+        const legacyStr = Array.isArray(legacyTarget)
+          ? legacyTarget.join(',')
+          : typeof legacyTarget === 'string'
+            ? legacyTarget
+            : '';
+        const allFields = [...adapterFields, legacyStr].join(',');
+
+        if (allFields.includes('email'))
           throw new ConflictException('Email already registered');
-        if (fields.includes('slug'))
+        if (allFields.includes('slug'))
           throw new ConflictException('A team with that name already exists');
       }
       throw e;

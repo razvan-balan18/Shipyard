@@ -56,7 +56,7 @@ export class EnvironmentsService {
     });
 
     if (!service) {
-      throw new BadRequestException('Service not found');
+      throw new NotFoundException('Service not found');
     }
 
     const environment = await this.prisma.environment.create({
