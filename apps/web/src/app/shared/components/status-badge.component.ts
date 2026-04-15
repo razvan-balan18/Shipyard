@@ -1,16 +1,26 @@
-import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, computed } from '@angular/core';
 
-// A simple reusable badge that shows colored dots + text for statuses
+const KNOWN_STATUSES = new Set([
+  'HEALTHY',
+  'SUCCESS',
+  'DEGRADED',
+  'IN_PROGRESS',
+  'RUNNING',
+  'DOWN',
+  'FAILED',
+  'UNKNOWN',
+  'PENDING',
+  'ROLLED_BACK',
+  'CANCELLED',
+]);
 
 @Component({
   selector: 'app-status-badge',
   standalone: true,
-  imports: [CommonModule],
   template: `
-    <span class="status-badge" [class]="'status-' + status()">
+    <span class="status-badge" [class]="badgeClass()">
       <span class="status-dot"></span>
-      {{ label() || status() }}
+      {{ label() || safeStatus() }}
     </span>
   `,
   styles: [
@@ -64,11 +74,15 @@ import { CommonModule } from '@angular/common';
       }
 
       .status-UNKNOWN .status-dot,
-      .status-PENDING .status-dot {
+      .status-PENDING .status-dot,
+      .status-ROLLED_BACK .status-dot,
+      .status-CANCELLED .status-dot {
         background: #6b7280;
       }
       .status-UNKNOWN,
-      .status-PENDING {
+      .status-PENDING,
+      .status-ROLLED_BACK,
+      .status-CANCELLED {
         background: rgba(107, 114, 128, 0.1);
         color: #6b7280;
       }
@@ -78,4 +92,7 @@ import { CommonModule } from '@angular/common';
 export class StatusBadgeComponent {
   status = input.required<string>();
   label = input<string>();
+
+  safeStatus = computed(() => (KNOWN_STATUSES.has(this.status()) ? this.status() : 'UNKNOWN'));
+  badgeClass = computed(() => 'status-' + this.safeStatus());
 }

@@ -23,7 +23,10 @@ export class HealthChecksService implements OnModuleInit {
   }
 
   async scheduleAllHealthChecks() {
-    await this.healthQueue.obliterate({ force: true });
+    const existing = await this.healthQueue.getRepeatableJobs();
+    for (const job of existing) {
+      await this.healthQueue.removeRepeatableByKey(job.key);
+    }
 
     const environments = await this.prisma.environment.findMany({
       where: {

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { HealthChecksService } from '../health-checks/health-checks.service';
 import { CreateEnvironmentDto } from './dto/create-environment.dto';
@@ -56,7 +52,7 @@ export class EnvironmentsService {
     });
 
     if (!service) {
-      throw new BadRequestException('Service not found');
+      throw new NotFoundException('Service not found');
     }
 
     const environment = await this.prisma.environment.create({

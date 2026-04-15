@@ -97,6 +97,7 @@ export interface EnvironmentSummary {
 
 export interface DeploymentSummary {
   id: string;
+  serviceId: string;
   status: DeploymentStatus;
   commitSha: string;
   commitMessage: string;
