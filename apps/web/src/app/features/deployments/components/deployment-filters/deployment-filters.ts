@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { DeploymentStatus } from '@shipyard/shared';
-import { ApiService } from '../../../core/api/api.service';
+import { ApiService } from '../../../../core/api/api.service';
 
 export interface DeploymentFilters {
   serviceId?: string;
@@ -33,56 +33,8 @@ interface ServiceOption {
   standalone: true,
   imports: [MatSelectModule, MatFormFieldModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="filters-bar">
-      <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Service</mat-label>
-        <mat-select
-          [value]="selectedServiceId()"
-          (selectionChange)="selectedServiceId.set($event.value)"
-        >
-          <mat-option [value]="undefined">All services</mat-option>
-          @for (svc of services(); track svc.id) {
-            <mat-option [value]="svc.id">{{ svc.displayName || svc.name }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Status</mat-label>
-        <mat-select [value]="selectedStatus()" (selectionChange)="selectedStatus.set($event.value)">
-          <mat-option [value]="undefined">All statuses</mat-option>
-          @for (status of statusOptions; track status) {
-            <mat-option [value]="status">{{ status }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <button mat-stroked-button class="clear-btn" (click)="clearFilters()">
-        <mat-icon>clear</mat-icon>
-        Clear filters
-      </button>
-    </div>
-  `,
-  styles: [
-    `
-      .filters-bar {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-        margin-bottom: 1rem;
-      }
-
-      .filter-field {
-        min-width: 180px;
-      }
-
-      .clear-btn {
-        height: 40px;
-      }
-    `,
-  ],
+  templateUrl: './deployment-filters.html',
+  styleUrl: './deployment-filters.scss',
 })
 export class DeploymentFiltersComponent {
   private api = inject(ApiService);

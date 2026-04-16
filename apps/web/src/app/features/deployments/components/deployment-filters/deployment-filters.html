@@ -1,0 +1,27 @@
+<p>deployment-filters works!</p>
+<div class="filters-bar">
+    <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Service</mat-label>
+        <mat-select [value]="selectedServiceId()" (selectionChange)="selectedServiceId.set($event.value)">
+            <mat-option [value]="undefined">All services</mat-option>
+            @for (svc of services(); track svc.id) {
+            <mat-option [value]="svc.id">{{ svc.displayName || svc.name }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Status</mat-label>
+        <mat-select [value]="selectedStatus()" (selectionChange)="selectedStatus.set($event.value)">
+            <mat-option [value]="undefined">All statuses</mat-option>
+            @for (status of statusOptions; track status) {
+            <mat-option [value]="status">{{ status }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button class="clear-btn" (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Clear filters
+    </button>
+</div>

@@ -15,15 +15,18 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { WsEventType } from '@shipyard/shared';
-import { ApiService } from '../../core/api/api.service';
-import { WebSocketService } from '../../core/websocket/websocket.service';
-import { LoadingSkeletonComponent } from '../../shared/components/loading-skeleton.component';
-import { EmptyStateComponent } from '../../shared/components/empty-state.component';
+import { ApiService } from '../../../core/api/api.service';
+import { WebSocketService } from '../../../core/websocket/websocket.service';
+import { LoadingSkeletonComponent } from '../../../shared/components/loading-skeleton.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state.component';
 import {
   DeploymentFiltersComponent,
   DeploymentFilters,
-} from './components/deployment-filters.component';
-import { DeploymentCardComponent, DeploymentItem } from './components/deployment-card.component';
+} from '.././components/deployment-filters/deployment-filters';
+import {
+  DeploymentCardComponent,
+  DeploymentItem,
+} from './../components/deployment-card/deployment-card';
 
 interface DeploymentsResponse {
   deployments: DeploymentItem[];
@@ -45,94 +48,8 @@ const PAGE_SIZE = 20;
     DeploymentCardComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="deployments-feed">
-      <h1 class="page-title">Deployment Feed</h1>
-
-      <app-deployment-filters (filtersChange)="onFiltersChange($event)" />
-
-      @if (loading() && deployments().length === 0) {
-        <app-loading-skeleton [count]="5" />
-      } @else if (error() && deployments().length === 0) {
-        <div class="error-banner">
-          <mat-icon>error_outline</mat-icon>
-          <span>{{ error() }}</span>
-          <button mat-button (click)="fetchDeployments()">Retry</button>
-        </div>
-      } @else if (deployments().length === 0 && !loading()) {
-        <app-empty-state message="No deployments found" />
-      } @else {
-        <div class="deployments-list">
-          @for (dep of deployments(); track dep.id) {
-            <app-deployment-card [deployment]="dep" />
-          }
-        </div>
-
-        <div class="load-more-container">
-          @if (hasMore()) {
-            <button mat-stroked-button [disabled]="loadingMore()" (click)="loadMore()">
-              @if (loadingMore()) {
-                <mat-spinner diameter="16" />
-              }
-              Load more
-            </button>
-          } @else if (deployments().length > 0) {
-            <span class="no-more">No more deployments</span>
-          }
-        </div>
-      }
-    </div>
-  `,
-  styles: [
-    `
-      .deployments-feed {
-        padding: 1.5rem;
-      }
-
-      .page-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: 0 0 1.25rem 0;
-        color: var(--text-primary);
-      }
-
-      .deployments-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      .load-more-container {
-        display: flex;
-        justify-content: center;
-        padding: 1rem 0;
-      }
-
-      .no-more {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-      }
-
-      .error-banner {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        background: rgba(239, 68, 68, 0.1);
-        color: #ef4444;
-        font-size: 0.875rem;
-      }
-      .error-banner mat-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-      }
-      .error-banner span {
-        flex: 1;
-      }
-    `,
-  ],
+  templateUrl: './deployments-feed.html',
+  styleUrl: './deployments-feed.scss',
 })
 export class DeploymentsFeedComponent {
   private api = inject(ApiService);

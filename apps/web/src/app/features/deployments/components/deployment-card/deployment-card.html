@@ -1,0 +1,30 @@
+<p>deployment-card works!</p>
+<div class="deployment-card">
+    <app-status-badge [status]="deployment().status" />
+
+    <a class="service-link" [routerLink]="['/services', deployment().serviceId]">
+        {{ deployment().service.displayName || deployment().service.name }}
+    </a>
+
+    <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+
+    <span class="env-name">{{
+        deployment().environment.displayName || deployment().environment.name
+        }}</span>
+
+    <span class="branch-name">
+        <mat-icon class="row-icon">fork_right</mat-icon>
+        {{ deployment().branch }}
+    </span>
+
+    <app-commit-sha [sha]="deployment().commitSha" />
+
+    <span class="commit-message">{{ truncatedMessage() }}</span>
+
+    <app-time-ago [timestamp]="deployment().startedAt" />
+
+    <span class="triggered-by">
+        <mat-icon class="row-icon">person_outline</mat-icon>
+        {{ deployment().triggeredBy }}
+    </span>
+</div>

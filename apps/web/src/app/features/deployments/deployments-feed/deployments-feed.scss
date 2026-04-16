@@ -1,0 +1,48 @@
+.deployments-feed {
+  padding: 1.5rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1.25rem 0;
+  color: var(--text-primary);
+}
+
+.deployments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.no-more {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+.error-banner mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.error-banner span {
+  flex: 1;
+}
