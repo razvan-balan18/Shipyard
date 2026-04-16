@@ -1,0 +1,37 @@
+<div class="dashboard">
+    <header class="dashboard-header">
+        <h1>Mission Control</h1>
+        <span class="ws-status" [class]="wsStatusClass()">
+            {{ wsService.connectionStatus() }}
+        </span>
+    </header>
+
+    <!-- Services grid -->
+    <section class="section">
+        <h2 class="section-title">Services</h2>
+        @if (loadingServices()) {
+        <app-loading-skeleton [count]="3" />
+        } @else {
+        <div class="services-grid">
+            @for (service of services(); track service.id) {
+            <app-service-card [service]="service" />
+            } @empty {
+            <div class="empty-inline">
+                No services configured yet.
+                <a routerLink="/services">Add one →</a>
+            </div>
+            }
+        </div>
+        }
+    </section>
+
+    <!-- Recent deployments -->
+    <section class="section">
+        <h2 class="section-title">Recent Deployments</h2>
+        @if (loadingDeployments()) {
+        <app-loading-skeleton [count]="5" />
+        } @else {
+        <app-recent-deployments [deployments]="recentDeployments()" />
+        }
+    </section>
+</div>

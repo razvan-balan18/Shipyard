@@ -1,0 +1,66 @@
+.deployments-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.deployment-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.deployment-row:last-child {
+  border-bottom: none;
+}
+
+.deploy-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.service-env {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.service-link {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.service-link:hover {
+  color: var(--accent);
+}
+
+.sep {
+  color: var(--text-muted);
+}
+
+.env {
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.commit-msg {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deploy-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}

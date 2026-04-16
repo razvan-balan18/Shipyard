@@ -1,0 +1,30 @@
+<div class="service-card">
+    <div class="card-header">
+        <h3 class="service-name">
+            <a [routerLink]="['/services', service().id]">{{ service().displayName }}</a>
+        </h3>
+        <span class="repo-url">{{ repoShort() }}</span>
+    </div>
+
+    <div class="environments">
+        @for (env of service().environments; track env.id) {
+        <div class="env-row">
+            <span class="env-name">{{ env.displayName }}</span>
+            <app-status-badge [status]="env.status" />
+            @if (env.currentDeployment) {
+            <app-time-ago [timestamp]="env.currentDeployment.startedAt" />
+            }
+        </div>
+        } @empty {
+        <p class="no-envs">No environments</p>
+        }
+    </div>
+
+    @if (service().lastDeployment) {
+    <div class="last-deployment">
+        <span class="label">Last deploy:</span>
+        <app-time-ago [timestamp]="service().lastDeployment!.startedAt" />
+        <span class="branch">{{ service().lastDeployment!.branch }}</span>
+    </div>
+    }
+</div>
