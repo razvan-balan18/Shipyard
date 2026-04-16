@@ -1,0 +1,37 @@
+<p>deployments-feed works!</p>
+<div class="deployments-feed">
+    <h1 class="page-title">Deployment Feed</h1>
+
+    <app-deployment-filters (filtersChange)="onFiltersChange($event)" />
+
+    @if (loading() && deployments().length === 0) {
+    <app-loading-skeleton [count]="5" />
+    } @else if (error() && deployments().length === 0) {
+    <div class="error-banner">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error() }}</span>
+        <button mat-button (click)="fetchDeployments()">Retry</button>
+    </div>
+    } @else if (deployments().length === 0 && !loading()) {
+    <app-empty-state message="No deployments found" />
+    } @else {
+    <div class="deployments-list">
+        @for (dep of deployments(); track dep.id) {
+        <app-deployment-card [deployment]="dep" />
+        }
+    </div>
+
+    <div class="load-more-container">
+        @if (hasMore()) {
+        <button mat-stroked-button [disabled]="loadingMore()" (click)="loadMore()">
+            @if (loadingMore()) {
+            <mat-spinner diameter="16" />
+            }
+            Load more
+        </button>
+        } @else if (deployments().length > 0) {
+        <span class="no-more">No more deployments</span>
+        }
+    </div>
+    }
+</div>

@@ -1,0 +1,15 @@
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.filter-field {
+  min-width: 180px;
+}
+
+.clear-btn {
+  height: 40px;
+}
