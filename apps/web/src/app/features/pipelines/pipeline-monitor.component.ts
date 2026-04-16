@@ -9,10 +9,10 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { PipelineStatus, WsEventType } from '@shipyard/shared';
 import { ApiService } from '../../core/api/api.service';
@@ -68,10 +68,10 @@ function formatDuration(seconds: number | undefined): string {
   standalone: true,
   imports: [
     RouterModule,
-    MatSelectModule,
-    MatFormFieldModule,
     MatButtonModule,
     MatIconModule,
+    MatSelectModule,
+    MatFormFieldModule,
     StatusBadgeComponent,
     CommitShaComponent,
     TimeAgoComponent,
@@ -86,13 +86,13 @@ function formatDuration(seconds: number | undefined): string {
       </header>
 
       <div class="filters-bar">
-        <mat-form-field appearance="outline" class="filter-field">
-          <mat-label>Service</mat-label>
+        <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
           <mat-select
-            [value]="selectedServiceId()"
-            (selectionChange)="selectedServiceId.set($event.value)"
+            [value]="selectedServiceId() ?? ''"
+            (selectionChange)="selectedServiceId.set($event.value || null)"
+            placeholder="All services"
           >
-            <mat-option [value]="null">All services</mat-option>
+            <mat-option value="">All services</mat-option>
             @for (svc of services(); track svc.id) {
               <mat-option [value]="svc.id">{{ svc.displayName || svc.name }}</mat-option>
             }
@@ -167,13 +167,63 @@ function formatDuration(seconds: number | undefined): string {
       .filters-bar {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-        margin-bottom: 1rem;
+        gap: 0.75rem;
+        flex-wrap: nowrap;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--border);
       }
 
       .filter-field {
-        min-width: 200px;
+        min-width: 180px;
+      }
+
+      .filter-field ::ng-deep .mat-mdc-text-field-wrapper {
+        height: 36px;
+        background: var(--bg-card);
+        padding: 0 12px;
+      }
+
+      .filter-field ::ng-deep .mat-mdc-form-field-infix {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+        min-height: unset !important;
+      }
+
+      .filter-field ::ng-deep .mdc-notched-outline__leading {
+        border-color: var(--border);
+        border-radius: 6px 0 0 6px;
+      }
+
+      .filter-field ::ng-deep .mdc-notched-outline__notch {
+        border-color: var(--border);
+        border-top: none;
+      }
+
+      .filter-field ::ng-deep .mdc-notched-outline__trailing {
+        border-color: var(--border);
+        border-radius: 0 6px 6px 0;
+      }
+
+      .filter-field ::ng-deep .mat-mdc-select-value,
+      .filter-field ::ng-deep .mat-mdc-select-placeholder {
+        font-size: 0.85rem;
+        font-family: inherit;
+        color: var(--text-primary);
+      }
+
+      .filter-field ::ng-deep .mat-mdc-select-placeholder {
+        color: var(--text-muted);
+      }
+
+      .filter-field ::ng-deep .mat-mdc-select-arrow {
+        color: var(--text-muted);
+      }
+
+      .filter-field:focus-within ::ng-deep .mdc-notched-outline__leading,
+      .filter-field:focus-within ::ng-deep .mdc-notched-outline__notch,
+      .filter-field:focus-within ::ng-deep .mdc-notched-outline__trailing {
+        border-color: var(--accent) !important;
       }
 
       .runs-list {

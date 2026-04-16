@@ -18,12 +18,37 @@
 .load-more-container {
   display: flex;
   justify-content: center;
-  padding: 1rem 0;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.load-more-btn {
+  min-width: 160px;
+  height: 38px;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  border-color: var(--border);
+  color: var(--text-secondary);
+  gap: 0.5rem;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+
+  &:not([disabled]):hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  mat-spinner {
+    margin-right: 6px;
+  }
 }
 
 .no-more {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
+  letter-spacing: 0.03em;
 }
 
 .error-banner {

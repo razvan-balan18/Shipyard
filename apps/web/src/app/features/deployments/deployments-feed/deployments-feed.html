@@ -1,4 +1,3 @@
-<p>deployments-feed works!</p>
 <div class="deployments-feed">
     <h1 class="page-title">Deployment Feed</h1>
 
@@ -23,7 +22,7 @@
 
     <div class="load-more-container">
         @if (hasMore()) {
-        <button mat-stroked-button [disabled]="loadingMore()" (click)="loadMore()">
+        <button mat-stroked-button class="load-more-btn" [disabled]="loadingMore()" (click)="loadMore()">
             @if (loadingMore()) {
             <mat-spinner diameter="16" />
             }

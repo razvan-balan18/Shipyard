@@ -1,0 +1,33 @@
+- generic [ref=e4]:
+    - generic [ref=e6]:
+        - generic [ref=e7]:
+            - generic [ref=e8]: ⚓
+            - generic [ref=e9]: SHIPYARD
+        - generic [ref=e10]:
+            - paragraph [ref=e11]: login works!
+            - generic [ref=e12]:
+                - generic [ref=e13]:
+                    - heading "Sign in" [level=1] [ref=e14]
+                    - paragraph [ref=e15]: Access your deployment control panel
+                - alert [ref=e30]:
+                    - generic [ref=e31]: '!'
+                    - generic [ref=e32]: Invalid email or password
+                - generic [ref=e16]:
+                    - generic [ref=e17]:
+                        - generic [ref=e18]: EMAIL
+                        - textbox "EMAIL" [ref=e19]:
+                            - /placeholder: you@example.com
+                            - text: razvan10balan10@gmail.com
+                    - generic [ref=e20]:
+                        - generic [ref=e21]: PASSWORD
+                        - textbox "PASSWORD" [ref=e22]:
+                            - /placeholder: ••••••••
+                            - text: password123
+                    - button "Sign in" [ref=e23] [cursor=pointer]:
+                        - generic [ref=e33]: Sign in
+                        - generic [ref=e34]: →
+                - generic [ref=e26]:
+                    - generic [ref=e27]: No account?
+                    - link "Create one" [ref=e28] [cursor=pointer]:
+                        - /url: /auth/register
+    - generic [ref=e29]: DEPLOYMENT_CONTROL_v1
