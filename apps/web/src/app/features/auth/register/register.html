@@ -1,0 +1,75 @@
+<p>register works!</p>
+<div class="auth-form">
+    <div class="form-header">
+        <h1 class="form-title">Create account</h1>
+        <p class="form-subtitle">Set up your team's control panel</p>
+    </div>
+
+    @if (error()) {
+    <div class="error-banner" role="alert">
+        <span class="error-icon">!</span>
+        <span>{{ error() }}</span>
+    </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="fields-grid">
+            <div class="field">
+                <label class="field-label" for="displayName">DISPLAY NAME</label>
+                <input id="displayName" class="field-input" [class.invalid]="showError('displayName')" type="text"
+                    formControlName="displayName" placeholder="Jane Smith" autocomplete="name" />
+                @if (showError('displayName')) {
+                <span class="field-error">Display name is required</span>
+                }
+            </div>
+
+            <div class="field">
+                <label class="field-label" for="teamName">TEAM NAME</label>
+                <input id="teamName" class="field-input" [class.invalid]="showError('teamName')" type="text"
+                    formControlName="teamName" placeholder="Acme Engineering" autocomplete="organization" />
+                @if (showError('teamName')) {
+                <span class="field-error">Team name is required</span>
+                }
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="field-label" for="email">EMAIL</label>
+            <input id="email" class="field-input" [class.invalid]="showError('email')" type="email"
+                formControlName="email" placeholder="you@example.com" autocomplete="email" />
+            @if (showError('email')) {
+            <span class="field-error">{{ emailError() }}</span>
+            }
+        </div>
+
+        <div class="field">
+            <label class="field-label" for="password">PASSWORD</label>
+            <input id="password" class="field-input" [class.invalid]="showError('password')" type="password"
+                formControlName="password" placeholder="Min. 8 characters" autocomplete="new-password" />
+            @if (showError('password')) {
+            <span class="field-error">{{ passwordError() }}</span>
+            }
+            @if (!showError('password') && form.get('password')?.value) {
+            <div class="password-strength">
+                <div class="strength-bar" [class]="'strength-' + passwordStrength()"></div>
+                <span class="strength-label">{{ passwordStrengthLabel() }}</span>
+            </div>
+            }
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="loading()">
+            @if (loading()) {
+            <span class="spinner" aria-hidden="true"></span>
+            <span>Creating account...</span>
+            } @else {
+            <span>Create account</span>
+            <span class="btn-arrow" aria-hidden="true">→</span>
+            }
+        </button>
+    </form>
+
+    <div class="form-footer">
+        <span class="footer-text">Already have an account?</span>
+        <a routerLink="/auth/login" class="footer-link">Sign in</a>
+    </div>
+</div>

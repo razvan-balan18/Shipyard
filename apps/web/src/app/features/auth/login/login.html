@@ -1,0 +1,51 @@
+<p>login works!</p>
+<div class="auth-form">
+    <div class="form-header">
+        <h1 class="form-title">Sign in</h1>
+        <p class="form-subtitle">Access your deployment control panel</p>
+    </div>
+
+    @if (error()) {
+    <div class="error-banner" role="alert">
+        <span class="error-icon">!</span>
+        <span>{{ error() }}</span>
+    </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="field">
+            <label class="field-label" for="email">EMAIL</label>
+            <input id="email" class="field-input" [class.invalid]="showError('email')" type="email"
+                formControlName="email" placeholder="you@example.com" autocomplete="email" />
+            @if (showError('email')) {
+            <span class="field-error">
+                {{ emailError() }}
+            </span>
+            }
+        </div>
+
+        <div class="field">
+            <label class="field-label" for="password">PASSWORD</label>
+            <input id="password" class="field-input" [class.invalid]="showError('password')" type="password"
+                formControlName="password" placeholder="••••••••" autocomplete="current-password" />
+            @if (showError('password')) {
+            <span class="field-error">Password is required</span>
+            }
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="loading()">
+            @if (loading()) {
+            <span class="spinner" aria-hidden="true"></span>
+            <span>Authenticating...</span>
+            } @else {
+            <span>Sign in</span>
+            <span class="btn-arrow" aria-hidden="true">→</span>
+            }
+        </button>
+    </form>
+
+    <div class="form-footer">
+        <span class="footer-text">No account?</span>
+        <a routerLink="/auth/register" class="footer-link">Create one</a>
+    </div>
+</div>
