@@ -17,6 +17,8 @@ describe('HealthOverview', () => {
   });
 
   it('should create', () => {
+    fixture.componentRef.setInput('health-overview', []);
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });

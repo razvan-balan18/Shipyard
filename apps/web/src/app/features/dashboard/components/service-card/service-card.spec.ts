@@ -17,6 +17,8 @@ describe('ServiceCardComponent', () => {
   });
 
   it('should create', () => {
+    fixture.componentRef.setInput('services', []);
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });

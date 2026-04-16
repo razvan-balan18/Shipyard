@@ -17,6 +17,8 @@ describe('RecentDeployments', () => {
   });
 
   it('should create', () => {
+    fixture.componentRef.setInput('deployments', []);
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });
