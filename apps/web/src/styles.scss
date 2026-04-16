@@ -3,6 +3,7 @@
 
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 /* ── Theme variables ────────────────────────────────────────────────────── */
 
@@ -16,6 +17,8 @@
   --text-secondary: #6c757d;
   --text-muted: #adb5bd;
   --accent: #4f46e5;
+  --accent-dim: rgba(79, 70, 229, 0.15);
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 }
 
 .dark {
@@ -28,6 +31,7 @@
   --text-secondary: #8b949e;
   --text-muted: #484f58;
   --accent: #818cf8;
+  --accent-dim: rgba(129, 140, 248, 0.12);
 }
 
 * {
