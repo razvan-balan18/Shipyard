@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RecentDeploymentsComponent } from './recent-deployments';
+import { provideRouter } from '@angular/router';
 
 describe('RecentDeployments', () => {
   let component: RecentDeploymentsComponent;
@@ -9,11 +10,11 @@ describe('RecentDeployments', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RecentDeploymentsComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RecentDeploymentsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

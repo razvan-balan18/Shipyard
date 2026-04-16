@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HealthOverview } from './health-overview';
+import { provideRouter } from '@angular/router';
 
 describe('HealthOverview', () => {
   let component: HealthOverview;
@@ -9,15 +10,14 @@ describe('HealthOverview', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HealthOverview],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HealthOverview);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
-    fixture.componentRef.setInput('health-overview', []);
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
