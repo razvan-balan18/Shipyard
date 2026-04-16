@@ -1,0 +1,47 @@
+<p>environment-grid works!</p>
+@if (loading()) {
+<app-loading-skeleton [count]="6" />
+} @else if (error() && environments().length === 0) {
+<div class="error-banner">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error() }}</span>
+    <button mat-button (click)="fetchEnvironments()">Retry</button>
+</div>
+} @else if (environments().length === 0) {
+<app-empty-state message="No environments yet. Add environments to your services." />
+} @else {
+@for (group of grouped(); track group.service.id) {
+<section class="service-group">
+    <h2 class="service-header">
+        <a [routerLink]="['/services', group.service.id]" class="service-link">
+            {{ group.service.displayName || group.service.name }}
+        </a>
+    </h2>
+
+    <div class="env-grid">
+        @for (env of group.environments; track env.id) {
+        <a class="env-card" [routerLink]="['/services', env.serviceId]">
+            <div class="card-top">
+                <span class="env-name">{{ env.displayName || env.name }}</span>
+                <app-status-badge [status]="env.status" />
+            </div>
+
+            @if (env.currentDeploymentId) {
+            <div class="card-detail">
+                <span class="detail-label">Current deploy:</span>
+                <span class="detail-value mono">{{ env.currentDeploymentId.slice(0, 8) }}</span>
+            </div>
+            }
+
+            @if (env.healthCheckUrl) {
+            <div class="card-detail">
+                <span class="detail-label">Health URL:</span>
+                <span class="detail-value">{{ extractDomain(env.healthCheckUrl) }}</span>
+            </div>
+            }
+        </a>
+        }
+    </div>
+</section>
+}
+}

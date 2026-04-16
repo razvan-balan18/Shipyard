@@ -4,6 +4,6 @@ export const ENVIRONMENTS_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./environment-grid.component').then((m) => m.EnvironmentGridComponent),
+      import('./environment-grid/environment-grid').then((m) => m.EnvironmentGridComponent),
   },
 ];
