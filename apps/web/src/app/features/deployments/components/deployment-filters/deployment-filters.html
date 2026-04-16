@@ -1,27 +1,28 @@
-<p>deployment-filters works!</p>
 <div class="filters-bar">
-    <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Service</mat-label>
-        <mat-select [value]="selectedServiceId()" (selectionChange)="selectedServiceId.set($event.value)">
-            <mat-option [value]="undefined">All services</mat-option>
+    <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
+        <mat-select [value]="selectedServiceId() ?? ''"
+            (selectionChange)="selectedServiceId.set($event.value || undefined)"
+            placeholder="All services">
+            <mat-option value="">All services</mat-option>
             @for (svc of services(); track svc.id) {
-            <mat-option [value]="svc.id">{{ svc.displayName || svc.name }}</mat-option>
+                <mat-option [value]="svc.id">{{ svc.displayName || svc.name }}</mat-option>
             }
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Status</mat-label>
-        <mat-select [value]="selectedStatus()" (selectionChange)="selectedStatus.set($event.value)">
-            <mat-option [value]="undefined">All statuses</mat-option>
+    <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
+        <mat-select [value]="selectedStatus() ?? ''"
+            (selectionChange)="selectedStatus.set($event.value || undefined)"
+            placeholder="All statuses">
+            <mat-option value="">All statuses</mat-option>
             @for (status of statusOptions; track status) {
-            <mat-option [value]="status">{{ status }}</mat-option>
+                <mat-option [value]="status">{{ status }}</mat-option>
             }
         </mat-select>
     </mat-form-field>
 
-    <button mat-stroked-button class="clear-btn" (click)="clearFilters()">
-        <mat-icon>clear</mat-icon>
+    <button class="clear-btn" (click)="clearFilters()">
+        <mat-icon>close</mat-icon>
         Clear filters
     </button>
 </div>

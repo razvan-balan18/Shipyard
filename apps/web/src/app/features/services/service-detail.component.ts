@@ -13,8 +13,17 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { SlicePipe } from '@angular/common';
-import { switchMap, filter, map, catchError, EMPTY, merge } from 'rxjs';
+import { switchMap, filter, map, catchError, EMPTY, merge, take } from 'rxjs';
 import { WsEventType } from '@shipyard/shared';
 
 import { ApiService } from '../../core/api/api.service';
@@ -45,6 +54,147 @@ function shortenRepoUrl(url: string | undefined): string {
   return url;
 }
 
+// ============================================================
+// Create Environment Dialog
+// ============================================================
+
+interface CreateEnvironmentPayload {
+  name: string;
+  displayName: string;
+  order: number;
+  serviceId: string;
+  url?: string;
+  healthCheckUrl?: string;
+}
+
+@Component({
+  selector: 'app-create-environment-dialog',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <h2 mat-dialog-title>Add Environment</h2>
+    <mat-dialog-content>
+      @if (errorMessage()) {
+        <div class="dialog-error">{{ errorMessage() }}</div>
+      }
+      <form [formGroup]="form" class="dialog-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" placeholder="production" />
+          <mat-hint>Lowercase letters, numbers, hyphens</mat-hint>
+          @if (form.controls.name.invalid && form.controls.name.touched) {
+            <mat-error>Required — lowercase letters, numbers, hyphens only</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Display Name</mat-label>
+          <input matInput formControlName="displayName" placeholder="Production" />
+          @if (form.controls.displayName.invalid && form.controls.displayName.touched) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>URL (optional)</mat-label>
+          <input matInput formControlName="url" placeholder="https://myapp.com" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Health Check URL (optional)</mat-label>
+          <input matInput formControlName="healthCheckUrl" placeholder="https://myapp.com/health" />
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="form.invalid || submitting()"
+        (click)="submit()"
+      >
+        {{ submitting() ? 'Adding...' : 'Add' }}
+      </button>
+    </mat-dialog-actions>
+  `,
+  styles: [
+    `
+      .dialog-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        min-width: 360px;
+        padding-top: 0.5rem;
+      }
+      .full-width {
+        width: 100%;
+      }
+      .dialog-error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+      }
+    `,
+  ],
+})
+export class CreateEnvironmentDialogComponent {
+  private api = inject(ApiService);
+  private dialogRef =
+    inject<MatDialogRef<CreateEnvironmentDialogComponent, EnvironmentStatusInput>>(MatDialogRef);
+  private fb = inject(FormBuilder);
+  readonly serviceId = inject<string>(MAT_DIALOG_DATA);
+
+  submitting = signal(false);
+  errorMessage = signal('');
+
+  form = this.fb.nonNullable.group({
+    name: ['', [Validators.required, Validators.pattern(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)]],
+    displayName: ['', [Validators.required]],
+    url: [''],
+    healthCheckUrl: [''],
+  });
+
+  submit(): void {
+    if (this.form.invalid) return;
+    this.submitting.set(true);
+    this.errorMessage.set('');
+    const v = this.form.getRawValue();
+    const payload: CreateEnvironmentPayload = {
+      name: v.name,
+      displayName: v.displayName,
+      order: 0,
+      serviceId: this.serviceId,
+      ...(v.url ? { url: v.url } : {}),
+      ...(v.healthCheckUrl ? { healthCheckUrl: v.healthCheckUrl } : {}),
+    };
+    this.api
+      .post<EnvironmentStatusInput>('/api/environments', payload)
+      .pipe(take(1))
+      .subscribe({
+        next: (env) => {
+          this.submitting.set(false);
+          this.dialogRef.close(env);
+        },
+        error: (err: { error?: { message?: string }; message?: string }) => {
+          this.submitting.set(false);
+          this.errorMessage.set(err?.error?.message ?? err?.message ?? 'Failed to add environment');
+        },
+      });
+  }
+}
+
+// ============================================================
+// Service Detail Component
+// ============================================================
+
 @Component({
   selector: 'app-service-detail',
   standalone: true,
@@ -54,11 +204,13 @@ function shortenRepoUrl(url: string | undefined): string {
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
+    MatDialogModule,
     LoadingSkeletonComponent,
     EnvironmentStatusComponent,
     DeploymentTimelineComponent,
     PipelineRunsComponent,
     SlicePipe,
+    CreateEnvironmentDialogComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -336,6 +488,7 @@ export class ServiceDetailComponent implements OnInit {
   private wsService = inject(WebSocketService);
   private destroyRef = inject(DestroyRef);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
 
   service = signal<ServiceDetail | null>(null);
   loading = signal(true);
@@ -406,8 +559,18 @@ export class ServiceDetailComponent implements OnInit {
   }
 
   onAddEnvironmentClick(): void {
-    this.snackBar.open('Add environment — coming soon', 'Dismiss', {
-      duration: 3000,
+    const svc = this.service();
+    if (!svc) return;
+    const ref = this.dialog.open(CreateEnvironmentDialogComponent, {
+      data: svc.id,
     });
+    ref
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((env) => {
+        if (env) {
+          this.service.update((s) => (s ? { ...s, environments: [...s.environments, env] } : s));
+        }
+      });
   }
 }
