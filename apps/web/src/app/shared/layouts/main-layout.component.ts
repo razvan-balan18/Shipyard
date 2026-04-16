@@ -82,6 +82,49 @@ import { ThemeService } from '../../core/theme/theme.service';
         color: var(--text-primary);
         background: var(--bg-hover);
       }
+      .sidebar-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.75rem 0.75rem;
+        border-top: 1px solid var(--border);
+        margin-top: auto;
+      }
+      .sidebar-footer a {
+        display: block;
+        padding: 0.625rem 0.75rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.15s;
+      }
+      .sidebar-footer a:hover,
+      .sidebar-footer a.active {
+        color: var(--text-primary);
+        background: var(--bg-hover);
+      }
+      .theme-toggle,
+      .logout-btn {
+        display: block;
+        width: 100%;
+        padding: 0.625rem 0.75rem;
+        background: none;
+        border: none;
+        border-radius: 6px;
+        color: var(--text-secondary);
+        text-align: left;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: all 0.15s;
+      }
+      .theme-toggle:hover {
+        color: var(--text-primary);
+        background: var(--bg-hover);
+      }
+      .logout-btn:hover {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.08);
+      }
       .main-content {
         flex: 1;
         overflow-y: auto;
