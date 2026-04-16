@@ -1,0 +1,27 @@
+@if (deployments().length === 0) {
+<app-empty-state message="No deployments yet." actionLabel="View all deployments" actionLink="/deployments" />
+} @else {
+<div class="deployments-list">
+    @for (d of deployments(); track d.id) {
+    <div class="deployment-row">
+        <app-status-badge [status]="d.status" />
+
+        <div class="deploy-meta">
+            <span class="service-env">
+                <a [routerLink]="['/services', d.serviceId]" class="service-link">{{
+                    d.serviceName
+                    }}</a>
+                <span class="sep">›</span>
+                <span class="env">{{ d.environmentName }}</span>
+            </span>
+            <span class="commit-msg">{{ d.commitMessage | slice: 0 : 72 }}</span>
+        </div>
+
+        <div class="deploy-right">
+            <app-commit-sha [sha]="d.commitSha" />
+            <app-time-ago [timestamp]="d.startedAt" />
+        </div>
+    </div>
+    }
+</div>
+}
