@@ -80,15 +80,17 @@ export class GitHubWebhookController {
         );
         break;
       case 'deployment':
-        this.githubService.handleDeploymentEvent(payload as DeploymentPayload);
+        await this.githubService.handleDeploymentEvent(
+          payload as DeploymentPayload,
+        );
         break;
       case 'deployment_status':
-        this.githubService.handleDeploymentStatusEvent(
+        await this.githubService.handleDeploymentStatusEvent(
           payload as DeploymentStatusPayload,
         );
         break;
       case 'push':
-        this.githubService.handlePushEvent(payload as PushPayload);
+        await this.githubService.handlePushEvent(payload as PushPayload);
         break;
       default:
         this.logger.log(
