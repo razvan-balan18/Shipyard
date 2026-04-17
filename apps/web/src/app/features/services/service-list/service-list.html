@@ -1,0 +1,63 @@
+<p>service-list works!</p>
+<div class="service-list-page">
+    <header class="page-header">
+        <h1>Services</h1>
+        <button mat-raised-button color="primary" (click)="openCreateDialog()">
+            <mat-icon>add</mat-icon>
+            New Service
+        </button>
+    </header>
+
+    @if (error()) {
+    <div class="error-banner">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error() }}</span>
+        <button mat-button (click)="loadServices()">Retry</button>
+    </div>
+    }
+
+    @if (loading()) {
+    <app-loading-skeleton [count]="4" />
+    } @else if (services().length === 0 && !error()) {
+    <app-empty-state message="No services found. Create your first service to get started."
+        actionLabel="Create your first service" />
+    } @else {
+    <div class="services-grid">
+        @for (service of services(); track service.id) {
+        <a [routerLink]="'/services/' + service.id" class="service-card">
+            <div class="card-header">
+                <div class="card-title-row">
+                    <h3 class="card-title">{{ service.displayName || service.name }}</h3>
+                    <button mat-icon-button class="delete-btn" (click)="confirmDelete(service, $event)"
+                        aria-label="Delete service">
+                        <mat-icon>delete_outline</mat-icon>
+                    </button>
+                </div>
+                @if (getShortRepo(service); as shortRepo) {
+                <span class="card-repo">{{ shortRepo }}</span>
+                }
+            </div>
+
+            <div class="card-body">
+                @if (service.techStack) {
+                <span class="tech-pill">{{ service.techStack }}</span>
+                }
+
+                <div class="card-meta">
+                    <div class="meta-item">
+                        <mat-icon class="meta-icon">dns</mat-icon>
+                        <span>{{ service.environments.length }} environment{{
+                            service.environments.length === 1 ? '' : 's'
+                            }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <app-status-badge [status]="getWorstStatus(service)" />
+            </div>
+        </a>
+        }
+    </div>
+    }
+</div>

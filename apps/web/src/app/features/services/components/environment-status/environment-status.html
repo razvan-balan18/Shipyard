@@ -1,0 +1,12 @@
+<p>environment-status works!</p>
+@if (showLink()) {
+<a [routerLink]="envLink()" class="env-row env-row--link">
+    <span class="env-name">{{ displayLabel() }}</span>
+    <app-status-badge [status]="environment().status" />
+</a>
+} @else {
+<div class="env-row">
+    <span class="env-name">{{ displayLabel() }}</span>
+    <app-status-badge [status]="environment().status" />
+</div>
+}

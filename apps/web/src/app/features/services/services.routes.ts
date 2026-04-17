@@ -3,10 +3,11 @@ import { Routes } from '@angular/router';
 export const SERVICES_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () => import('./service-list.component').then((m) => m.ServiceListComponent),
+    loadComponent: () => import('./service-list/service-list').then((m) => m.ServiceListComponent),
   },
   {
     path: ':id',
-    loadComponent: () => import('./service-detail.component').then((m) => m.ServiceDetailComponent),
+    loadComponent: () =>
+      import('./service-detail/service-detail').then((m) => m.ServiceDetailComponent),
   },
 ];
