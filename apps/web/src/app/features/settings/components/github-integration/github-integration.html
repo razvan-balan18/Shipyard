@@ -1,43 +1,179 @@
-<p>github-integration works!</p>
 <div class="github-page">
-    <header class="page-header">
-        <h2>GitHub Integration</h2>
-    </header>
+  <header class="page-header">
+    <h2>GitHub Integration</h2>
+    <p class="subtitle">Connect your GitHub repositories to automatically track CI/CD pipeline runs and deployments.</p>
+  </header>
 
-    <div class="status-row">
-        <mat-icon class="status-icon">info_outline</mat-icon>
-        <span class="status-text">Not configured</span>
-        <span class="phase-badge">Coming in Phase 4</span>
+  <!-- Error -->
+  @if (error()) {
+    <div class="error-banner">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ error() }}</span>
     </div>
+  }
 
-    <div class="info-card">
-        <h3>What will this do?</h3>
-        <ul class="info-list">
-            <li>
-                <mat-icon>check_circle_outline</mat-icon>
-                <span>Install a GitHub App to connect your repositories</span>
-            </li>
-            <li>
-                <mat-icon>check_circle_outline</mat-icon>
-                <span>Automatically track CI/CD pipeline runs from GitHub Actions webhooks</span>
-            </li>
-            <li>
-                <mat-icon>check_circle_outline</mat-icon>
-                <span>Surface commit, branch, and PR metadata on each deployment</span>
-            </li>
-        </ul>
+  <!-- Status Banner -->
+  @if (!loading() && !error()) {
+    <div class="status-banner" [class.connected]="isConnected()" [class.pending]="!isConnected()">
+      <mat-icon class="status-icon">{{ isConnected() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+      <div class="status-info">
+        @if (isConnected()) {
+          <span class="status-label">Receiving events</span>
+          <span class="status-detail">
+            {{ status()?.eventsReceived }} pipeline event{{ (status()?.eventsReceived ?? 0) !== 1 ? 's' : '' }} received
+            @if (status()?.lastEventAt) {
+              · last {{ status()!.lastEventAt | relativeTime }}
+            }
+          </span>
+        } @else {
+          <span class="status-label">No events received yet</span>
+          <span class="status-detail">Follow the setup guide below to send your first webhook</span>
+        }
+      </div>
+    </div>
+  }
 
-        <div class="webhook-section">
-            <label class="webhook-label">Webhook URL</label>
-            <div class="webhook-url-row">
-                <code class="webhook-url">{{ webhookUrl }}</code>
-                <button mat-icon-button (click)="copyWebhookUrl()" aria-label="Copy webhook URL" class="copy-btn">
-                    <mat-icon>content_copy</mat-icon>
-                </button>
-            </div>
-            <p class="webhook-hint">
-                This is the URL GitHub will POST webhook events to once the integration is configured.
-            </p>
+  <div class="content-grid">
+
+    <!-- Webhook Config Card -->
+    <section class="card webhook-card">
+      <h3>
+        <mat-icon>link</mat-icon>
+        Webhook Configuration
+      </h3>
+
+      <label class="field-label">Payload URL</label>
+      <div class="url-row">
+        <code class="url-value">{{ webhookUrl }}</code>
+        <button mat-icon-button (click)="copyWebhookUrl()" aria-label="Copy webhook URL" class="copy-btn">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+
+      <div class="secret-info">
+        <mat-icon class="lock-icon">lock_outline</mat-icon>
+        <div>
+          <strong>Webhook Secret</strong>
+          <p>
+            Paste the value of <code>GITHUB_WEBHOOK_SECRET</code> from your server's
+            <code>.env</code> file into GitHub's "Secret" field. Shipyard rejects any
+            webhook that doesn't match.
+          </p>
         </div>
-    </div>
+      </div>
+
+      <div class="events-info">
+        <label class="field-label">Required events</label>
+        <ul class="event-chips">
+          <li><code>push</code></li>
+          <li><code>workflow_run</code></li>
+          <li><code>deployment</code></li>
+          <li><code>deployment_status</code></li>
+        </ul>
+        <p class="hint">Set Content type to <code>application/json</code>.</p>
+      </div>
+    </section>
+
+    <!-- Setup Guide -->
+    <section class="card setup-guide">
+      <h3>
+        <mat-icon>rocket_launch</mat-icon>
+        Setup Guide
+      </h3>
+      <ol class="steps">
+        <li>
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <strong>Copy the Payload URL</strong>
+            <span>Use the copy button in the Webhook Configuration card.</span>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <strong>Open your GitHub repository → Settings → Webhooks → Add webhook</strong>
+            <span>Do this for each repository you want to track in Shipyard.</span>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <strong>Set Content type to <code>application/json</code></strong>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <strong>Paste <code>GITHUB_WEBHOOK_SECRET</code> into the Secret field</strong>
+            <span>This value is in your server's <code>.env</code> file.</span>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">5</span>
+          <div class="step-body">
+            <strong>Select events: <code>push</code>, <code>workflow_run</code>, <code>deployment</code>, <code>deployment_status</code></strong>
+            <span>Or choose "Send me everything" if unsure.</span>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">6</span>
+          <div class="step-body">
+            <strong>Make sure your Shipyard service's Repository URL matches the GitHub repo URL exactly</strong>
+            <span>
+              Shipyard matches incoming events to services by URL.
+              Example: <code>https://github.com/org/repo</code>
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">7</span>
+          <div class="step-body">
+            <strong>(Optional) Auto-deploy via GitHub Deployments API</strong>
+            <span>
+              In your GitHub Actions workflow, use the <code>deployment</code> and
+              <code>deployment_status</code> events to let Shipyard automatically create and
+              complete deployment records — no custom API calls needed.
+            </span>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Connected Services -->
+    <section class="card services-card">
+      <h3>
+        <mat-icon>hub</mat-icon>
+        Connected Services
+      </h3>
+      <p class="card-desc">
+        Services with GitHub as their repository provider. These will receive events from GitHub webhooks.
+      </p>
+
+      @if (loading()) {
+        <div class="loading-placeholder">
+          <span class="shimmer-line"></span>
+          <span class="shimmer-line short"></span>
+        </div>
+      } @else if ((status()?.connectedServices?.length ?? 0) === 0) {
+        <div class="empty-state">
+          <mat-icon>info_outline</mat-icon>
+          <span>No GitHub services yet. Create a service and set its repository provider to GitHub.</span>
+        </div>
+      } @else {
+        <ul class="service-list">
+          @for (svc of status()!.connectedServices; track svc.id) {
+            <li class="service-row">
+              <mat-icon class="repo-icon">folder_open</mat-icon>
+              <div class="service-info">
+                <a [routerLink]="['/services', svc.id]" class="service-name">{{ svc.name }}</a>
+                <span class="repo-url">{{ shortenUrl(svc.repositoryUrl) }}</span>
+              </div>
+              <mat-icon class="ok-icon">check_circle</mat-icon>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+  </div>
 </div>

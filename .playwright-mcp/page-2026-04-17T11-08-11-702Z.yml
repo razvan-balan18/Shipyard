@@ -1,0 +1,160 @@
+- generic [ref=e4]:
+    - navigation [ref=e5]:
+        - generic [ref=e6]:
+            - generic [ref=e7]: ⚓
+            - generic [ref=e8]: Shipyard
+        - list [ref=e9]:
+            - listitem [ref=e10]:
+                - link "Dashboard" [ref=e11] [cursor=pointer]:
+                    - /url: /dashboard
+            - listitem [ref=e12]:
+                - link "Services" [ref=e13] [cursor=pointer]:
+                    - /url: /services
+            - listitem [ref=e14]:
+                - link "Deployments" [ref=e15] [cursor=pointer]:
+                    - /url: /deployments
+            - listitem [ref=e16]:
+                - link "Pipelines" [ref=e17] [cursor=pointer]:
+                    - /url: /pipelines
+            - listitem [ref=e18]:
+                - link "Environments" [ref=e19] [cursor=pointer]:
+                    - /url: /environments
+        - generic [ref=e20]:
+            - link "Settings" [ref=e21] [cursor=pointer]:
+                - /url: /settings
+            - button "☀️" [ref=e22] [cursor=pointer]
+            - button "Logout" [ref=e23] [cursor=pointer]
+    - main [ref=e24]:
+        - generic [ref=e26]:
+            - heading "Settings" [level=1] [ref=e27]
+            - generic [ref=e28]:
+                - tablist [ref=e31]:
+                    - generic [ref=e32]:
+                        - tab "Team Members" [ref=e33] [cursor=pointer]:
+                            - generic [ref=e35]: Team Members
+                        - tab "Notifications" [ref=e36] [cursor=pointer]:
+                            - generic [ref=e38]: Notifications
+                        - tab "GitHub" [active] [selected] [ref=e39] [cursor=pointer]:
+                            - generic [ref=e41]: GitHub
+                - generic [ref=e42]:
+                    - tabpanel [ref=e75]
+                    - tabpanel [ref=e72]
+                    - tabpanel "GitHub" [ref=e76]:
+                        - generic [ref=e80]:
+                            - generic [ref=e81]:
+                                - heading "GitHub Integration" [level=2] [ref=e82]
+                                - paragraph [ref=e83]: Connect your GitHub repositories to automatically track CI/CD pipeline runs and deployments.
+                            - generic [ref=e84]:
+                                - img [ref=e85]: check_circle
+                                - generic [ref=e86]:
+                                    - generic [ref=e87]: Receiving events
+                                    - generic [ref=e88]: 1 pipeline event received · last 2 minutes ago
+                            - generic [ref=e89]:
+                                - generic [ref=e90]:
+                                    - heading "Webhook Configuration" [level=3] [ref=e91]:
+                                        - img [ref=e92]: link
+                                        - text: Webhook Configuration
+                                    - generic [ref=e93]: Payload URL
+                                    - generic [ref=e94]:
+                                        - code [ref=e95]: http://localhost:3000/api/webhooks/github
+                                        - button "Copy webhook URL" [ref=e96] [cursor=pointer]:
+                                            - img [ref=e97]: content_copy
+                                    - generic [ref=e100]:
+                                        - img [ref=e101]: lock_outline
+                                        - generic [ref=e102]:
+                                            - strong [ref=e103]: Webhook Secret
+                                            - paragraph [ref=e104]:
+                                                - text: Paste the value of
+                                                - code [ref=e105]: GITHUB_WEBHOOK_SECRET
+                                                - text: from your server's
+                                                - code [ref=e106]: .env
+                                                - text: file into GitHub's "Secret" field. Shipyard rejects any webhook that doesn't match.
+                                    - generic [ref=e107]:
+                                        - generic [ref=e108]: Required events
+                                        - list [ref=e109]:
+                                            - listitem [ref=e110]:
+                                                - code [ref=e111]: push
+                                            - listitem [ref=e112]:
+                                                - code [ref=e113]: workflow_run
+                                            - listitem [ref=e114]:
+                                                - code [ref=e115]: deployment
+                                            - listitem [ref=e116]:
+                                                - code [ref=e117]: deployment_status
+                                        - paragraph [ref=e118]:
+                                            - text: Set Content type to
+                                            - code [ref=e119]: application/json
+                                            - text: .
+                                - generic [ref=e120]:
+                                    - heading "Setup Guide" [level=3] [ref=e121]:
+                                        - img [ref=e122]: rocket_launch
+                                        - text: Setup Guide
+                                    - list [ref=e123]:
+                                        - listitem [ref=e124]:
+                                            - generic [ref=e125]: '1'
+                                            - generic [ref=e126]:
+                                                - strong [ref=e127]: Copy the Payload URL
+                                                - generic [ref=e128]: Use the copy button in the Webhook Configuration card.
+                                        - listitem [ref=e129]:
+                                            - generic [ref=e130]: '2'
+                                            - generic [ref=e131]:
+                                                - strong [ref=e132]: Open your GitHub repository → Settings → Webhooks → Add webhook
+                                                - generic [ref=e133]: Do this for each repository you want to track in Shipyard.
+                                        - listitem [ref=e134]:
+                                            - generic [ref=e135]: '3'
+                                            - strong [ref=e137]:
+                                                - text: Set Content type to
+                                                - code [ref=e138]: application/json
+                                        - listitem [ref=e139]:
+                                            - generic [ref=e140]: '4'
+                                            - generic [ref=e141]:
+                                                - strong [ref=e142]:
+                                                    - text: Paste
+                                                    - code [ref=e143]: GITHUB_WEBHOOK_SECRET
+                                                    - text: into the Secret field
+                                                - generic [ref=e144]:
+                                                    - text: This value is in your server's
+                                                    - code [ref=e145]: .env
+                                                    - text: file.
+                                        - listitem [ref=e146]:
+                                            - generic [ref=e147]: '5'
+                                            - generic [ref=e148]:
+                                                - strong [ref=e149]:
+                                                    - text: 'Select events:'
+                                                    - code [ref=e150]: push
+                                                    - text: ','
+                                                    - code [ref=e151]: workflow_run
+                                                    - text: ','
+                                                    - code [ref=e152]: deployment
+                                                    - text: ','
+                                                    - code [ref=e153]: deployment_status
+                                                - generic [ref=e154]: Or choose "Send me everything" if unsure.
+                                        - listitem [ref=e155]:
+                                            - generic [ref=e156]: '6'
+                                            - generic [ref=e157]:
+                                                - strong [ref=e158]: Make sure your Shipyard service's Repository URL matches the GitHub repo URL exactly
+                                                - generic [ref=e159]:
+                                                    - text: 'Shipyard matches incoming events to services by URL. Example:'
+                                                    - code [ref=e160]: https://github.com/org/repo
+                                        - listitem [ref=e161]:
+                                            - generic [ref=e162]: '7'
+                                            - generic [ref=e163]:
+                                                - strong [ref=e164]: (Optional) Auto-deploy via GitHub Deployments API
+                                                - generic [ref=e165]:
+                                                    - text: In your GitHub Actions workflow, use the
+                                                    - code [ref=e166]: deployment
+                                                    - text: and
+                                                    - code [ref=e167]: deployment_status
+                                                    - text: events to let Shipyard automatically create and complete deployment records — no custom API calls needed.
+                                - generic [ref=e168]:
+                                    - heading "Connected Services" [level=3] [ref=e169]:
+                                        - img [ref=e170]: hub
+                                        - text: Connected Services
+                                    - paragraph [ref=e171]: Services with GitHub as their repository provider. These will receive events from GitHub webhooks.
+                                    - list [ref=e172]:
+                                        - listitem [ref=e173]:
+                                            - img [ref=e174]: folder_open
+                                            - generic [ref=e175]:
+                                                - link "test-api" [ref=e176] [cursor=pointer]:
+                                                    - /url: /services/55a2afb7-67a4-4a5f-8796-a668aad5da42
+                                                - generic [ref=e177]: testorg/test-api
+                                            - img [ref=e178]: check_circle

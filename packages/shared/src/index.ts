@@ -239,3 +239,17 @@ export interface UpdateNotificationChannelRequest {
   events?: string[];
   enabled?: boolean;
 }
+
+// === GitHub Integration Types ===
+
+export interface ConnectedServiceRef {
+  id: string;
+  name: string;
+  repositoryUrl: string;
+}
+
+export interface GitHubIntegrationStatus {
+  eventsReceived: number;
+  lastEventAt: string | null;
+  connectedServices: ConnectedServiceRef[];
+}

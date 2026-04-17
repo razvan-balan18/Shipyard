@@ -1,0 +1,68 @@
+- generic [ref=e30]:
+    - navigation [ref=e31]:
+        - generic [ref=e32]:
+            - generic [ref=e33]: ⚓
+            - generic [ref=e34]: Shipyard
+        - list [ref=e35]:
+            - listitem [ref=e36]:
+                - link "Dashboard" [ref=e37] [cursor=pointer]:
+                    - /url: /dashboard
+            - listitem [ref=e38]:
+                - link "Services" [ref=e39] [cursor=pointer]:
+                    - /url: /services
+            - listitem [ref=e40]:
+                - link "Deployments" [ref=e41] [cursor=pointer]:
+                    - /url: /deployments
+            - listitem [ref=e42]:
+                - link "Pipelines" [ref=e43] [cursor=pointer]:
+                    - /url: /pipelines
+            - listitem [ref=e44]:
+                - link "Environments" [ref=e45] [cursor=pointer]:
+                    - /url: /environments
+        - generic [ref=e46]:
+            - link "Settings" [ref=e47] [cursor=pointer]:
+                - /url: /settings
+            - button "☀️" [ref=e48] [cursor=pointer]
+            - button "Logout" [ref=e49] [cursor=pointer]
+    - main [ref=e50]:
+        - generic [ref=e52]:
+            - generic [ref=e53]:
+                - heading "Mission Control" [level=1] [ref=e54]
+                - generic [ref=e55]: connected
+            - generic [ref=e56]:
+                - heading "Services" [level=2] [ref=e57]
+                - generic [ref=e60]:
+                    - generic [ref=e61]:
+                        - heading "Test API" [level=3] [ref=e62]:
+                            - link "Test API" [ref=e63] [cursor=pointer]:
+                                - /url: /services/55a2afb7-67a4-4a5f-8796-a668aad5da42
+                        - generic [ref=e64]: github.com/testorg/test-api
+                    - generic [ref=e66]:
+                        - generic [ref=e67]: Production
+                        - generic [ref=e69]: UNKNOWN
+                        - time [ref=e72]: 2 minutes ago
+            - generic [ref=e73]:
+                - heading "Recent Deployments" [level=2] [ref=e74]
+                - generic [ref=e76]:
+                    - generic [ref=e77]:
+                        - generic [ref=e79]: FAILED
+                        - generic [ref=e81]:
+                            - generic [ref=e82]:
+                                - link:
+                                    - /url: /services/55a2afb7-67a4-4a5f-8796-a668aad5da42
+                                - generic [ref=e83]: ›
+                            - generic [ref=e84]: GitHub deployment to production (badcomm)
+                        - generic [ref=e85]:
+                            - code [ref=e87]: badcomm
+                            - time [ref=e89]: 1 minute ago
+                    - generic [ref=e90]:
+                        - generic [ref=e92]: SUCCESS
+                        - generic [ref=e94]:
+                            - generic [ref=e95]:
+                                - link:
+                                    - /url: /services/55a2afb7-67a4-4a5f-8796-a668aad5da42
+                                - generic [ref=e96]: ›
+                            - generic [ref=e97]: GitHub deployment to production (abc1234)
+                        - generic [ref=e98]:
+                            - code [ref=e100]: abc1234
+                            - time [ref=e102]: 2 minutes ago
