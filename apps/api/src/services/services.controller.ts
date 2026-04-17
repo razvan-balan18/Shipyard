@@ -8,6 +8,7 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { ServicesService } from './services.service';
 import {
@@ -19,6 +20,7 @@ import { UserRole } from '../generated/prisma/client';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 
+@ApiBearerAuth()
 @Controller('api/services')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ServicesController {

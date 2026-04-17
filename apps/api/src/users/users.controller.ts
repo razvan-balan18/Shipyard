@@ -8,6 +8,7 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 import {
@@ -20,6 +21,7 @@ import { InviteUserDto } from './dto/invite-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 
+@ApiBearerAuth()
 @Controller('api/users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UsersController {

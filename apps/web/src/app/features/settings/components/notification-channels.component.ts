@@ -605,7 +605,7 @@ export class NotificationChannelsComponent implements OnInit {
     const payload: CreateNotificationChannelRequest = {
       name,
       type,
-      config: { webhookUrl },
+      config: type === 'WEBHOOK' ? { url: webhookUrl } : { webhookUrl },
       events: this.selectedEvents(),
       enabled: this.addFormEnabled(),
     };

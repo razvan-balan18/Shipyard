@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Param, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { HealthChecksService } from './health-checks.service';
 import {
@@ -8,6 +9,7 @@ import {
 import { RolesGuard, Roles } from '../common/guards/roles.guard';
 import { UserRole } from '../generated/prisma/client';
 
+@ApiBearerAuth()
 @Controller('api/health-checks')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class HealthChecksController {

@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { EnvironmentsService } from './environments.service';
 import {
@@ -20,6 +21,7 @@ import { UserRole } from '../generated/prisma/client';
 import { CreateEnvironmentDto } from './dto/create-environment.dto';
 import { UpdateEnvironmentDto } from './dto/update-environment.dto';
 
+@ApiBearerAuth()
 @Controller('api/environments')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class EnvironmentsController {
