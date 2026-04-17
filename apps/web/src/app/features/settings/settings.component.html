@@ -1,0 +1,23 @@
+<div class="settings-page">
+    <h1 class="page-title">Settings</h1>
+
+    <mat-tab-group animationDuration="200ms">
+        <mat-tab label="Team Members">
+            <div class="tab-content">
+                <app-team-members />
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Notifications">
+            <div class="tab-content">
+                <app-notification-channels />
+            </div>
+        </mat-tab>
+
+        <mat-tab label="GitHub">
+            <div class="tab-content">
+                <app-github-integration />
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

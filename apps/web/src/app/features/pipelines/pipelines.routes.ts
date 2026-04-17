@@ -4,6 +4,6 @@ export const PIPELINES_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./pipeline-monitor.component').then((m) => m.PipelineMonitorComponent),
+      import('./pipeline-monitor/pipeline-monitor').then((m) => m.PipelineMonitorComponent),
   },
 ];

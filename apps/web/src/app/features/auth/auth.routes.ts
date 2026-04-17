@@ -4,7 +4,7 @@ export const AUTH_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../../shared/layouts/auth-layout.component').then((m) => m.AuthLayoutComponent),
+      import('../../shared/layouts/auth-layout/auth-layout').then((m) => m.AuthLayoutComponent),
     children: [
       {
         path: '',

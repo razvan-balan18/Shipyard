@@ -1,0 +1,40 @@
+<p>pipeline-runs works!</p>
+@if (loading() && runs().length === 0) {
+<app-loading-skeleton [count]="5" />
+} @else if (error() && runs().length === 0) {
+<div class="error-banner">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error() }}</span>
+    <button mat-button (click)="fetchRuns()">Retry</button>
+</div>
+} @else if (runs().length === 0 && !loading()) {
+<app-empty-state message="No pipeline runs yet. Connect GitHub to see pipeline activity." />
+} @else {
+<div class="runs-list">
+    @for (run of runs(); track run.id) {
+    <div class="run-row">
+        <app-status-badge [status]="run.status" />
+
+        <div class="run-info">
+            <span class="run-name">{{ run.name }}</span>
+            <div class="run-meta">
+                <span class="branch">
+                    <mat-icon class="meta-icon">fork_right</mat-icon>
+                    {{ run.branch }}
+                </span>
+                <app-commit-sha [sha]="run.commitSha" />
+            </div>
+        </div>
+
+        <span class="triggered-by">
+            <mat-icon class="meta-icon">person_outline</mat-icon>
+            {{ run.triggeredBy }}
+        </span>
+
+        <span class="duration">{{ formatDuration(run.duration) }}</span>
+
+        <app-time-ago [timestamp]="run.createdAt" />
+    </div>
+    }
+</div>
+}

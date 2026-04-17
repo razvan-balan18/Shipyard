@@ -13,7 +13,7 @@ export const routes: Routes = [
     path: '',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./shared/layouts/main-layout.component').then((m) => m.MainLayoutComponent),
+      import('./shared/layouts/main-layout/main-layout').then((m) => m.MainLayoutComponent),
     children: [
       {
         path: '',

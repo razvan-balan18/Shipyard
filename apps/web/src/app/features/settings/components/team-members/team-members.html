@@ -1,0 +1,125 @@
+<p>team-members works!</p>
+<div class="team-members-page">
+    <header class="page-header">
+        <h2>Team Members</h2>
+    </header>
+
+    @if (error()) {
+    <div class="error-banner">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error() }}</span>
+        <button mat-button (click)="loadMembers()">Retry</button>
+    </div>
+    }
+
+    @if (loading()) {
+    <div class="loading-container">
+        <mat-spinner diameter="40" />
+    </div>
+    } @else {
+    <div class="members-table">
+        <div class="table-header">
+            <span class="col-user">User</span>
+            <span class="col-role">Role</span>
+            <span class="col-actions">Actions</span>
+        </div>
+
+        @for (member of members(); track member.id) {
+        <div class="member-row">
+            <div class="col-user user-info">
+                <div class="avatar" [style.background-color]="getAvatarColor(member.displayName)">
+                    {{ getInitials(member.displayName) }}
+                </div>
+                <div class="user-details">
+                    <span class="user-name">{{ member.displayName }}</span>
+                    <span class="user-email">{{ member.email }}</span>
+                </div>
+            </div>
+
+            <div class="col-role">
+                @if (isOwner(member) || isCurrentUser(member)) {
+                <span class="role-badge" [style.color]="getRoleColor(member.role)"
+                    [style.background-color]="getRoleBg(member.role)">
+                    {{ member.role }}
+                </span>
+                } @else {
+                <mat-form-field appearance="outline" class="role-select">
+                    <mat-select [value]="member.role" (selectionChange)="onRoleChange(member, $event.value)">
+                        <mat-option value="ADMIN">ADMIN</mat-option>
+                        <mat-option value="MEMBER">MEMBER</mat-option>
+                        <mat-option value="VIEWER">VIEWER</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                }
+            </div>
+
+            <div class="col-actions">
+                @if (!isOwner(member) && !isCurrentUser(member)) {
+                <button mat-icon-button class="delete-btn" (click)="confirmRemove(member)" aria-label="Remove member">
+                    <mat-icon>delete_outline</mat-icon>
+                </button>
+                }
+            </div>
+        </div>
+        }
+    </div>
+
+    <mat-expansion-panel class="invite-panel">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <mat-icon class="invite-icon">person_add</mat-icon>
+                Invite Member
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        @if (inviteError()) {
+        <div class="error-banner compact">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ inviteError() }}</span>
+        </div>
+        }
+
+        <form [formGroup]="inviteForm" (ngSubmit)="submitInvite()" class="invite-form">
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" type="email" placeholder="user@example.com" />
+                    @if (inviteForm.controls.email.hasError('email')) {
+                    <mat-error>Enter a valid email address</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Display Name</mat-label>
+                    <input matInput formControlName="displayName" placeholder="Jane Doe" />
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Password</mat-label>
+                    <input matInput formControlName="password" type="password" placeholder="Min 8 characters" />
+                    @if (inviteForm.controls.password.hasError('minlength')) {
+                    <mat-error>Password must be at least 8 characters</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Role</mat-label>
+                    <mat-select formControlName="role">
+                        <mat-option value="ADMIN">ADMIN</mat-option>
+                        <mat-option value="MEMBER">MEMBER</mat-option>
+                        <mat-option value="VIEWER">VIEWER</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-primary" type="submit" [disabled]="inviteForm.invalid || inviting()">
+                    {{ inviting() ? 'Inviting...' : 'Send Invite' }}
+                </button>
+            </div>
+        </form>
+    </mat-expansion-panel>
+    }
+</div>
