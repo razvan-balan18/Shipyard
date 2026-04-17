@@ -1,0 +1,118 @@
+<p>notification-channels works!</p>
+<div class="channels-page">
+    <header class="page-header">
+        <h2>Notification Channels</h2>
+    </header>
+
+    @if (error()) {
+    <div class="error-banner">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error() }}</span>
+        <button mat-button (click)="loadChannels()">Retry</button>
+    </div>
+    }
+
+    @if (loading()) {
+    <div class="loading-container">
+        <mat-spinner diameter="40" />
+    </div>
+    } @else {
+    @if (channels().length === 0) {
+    <div class="empty-state">
+        <mat-icon>notifications_off</mat-icon>
+        <p>No notification channels configured yet.</p>
+    </div>
+    } @else {
+    <div class="channels-list">
+        @for (channel of channels(); track channel.id) {
+        <div class="channel-row">
+            <div class="channel-info">
+                <mat-icon class="channel-type-icon">{{ getChannelIcon(channel.type) }}</mat-icon>
+                <div class="channel-details">
+                    <div class="channel-name-row">
+                        <span class="channel-name">{{ channel.name }}</span>
+                        <span class="channel-type-badge">{{ channel.type }}</span>
+                    </div>
+                    <div class="channel-events">
+                        @for (event of channel.events; track event) {
+                        <span class="event-chip">{{ getEventLabel(event) }}</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="channel-actions">
+                <mat-slide-toggle [checked]="channel.enabled" (change)="onToggleEnabled(channel, $event.checked)"
+                    aria-label="Toggle channel" />
+                <button mat-icon-button (click)="testChannel(channel)" aria-label="Test channel" class="test-btn">
+                    <mat-icon>send</mat-icon>
+                </button>
+                <button mat-icon-button (click)="confirmDelete(channel)" aria-label="Delete channel" class="delete-btn">
+                    <mat-icon>delete_outline</mat-icon>
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+
+    <!-- Add Channel Form -->
+    <div class="add-channel-section">
+        <h3>Add Channel</h3>
+
+        @if (addError()) {
+        <div class="error-banner compact">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ addError() }}</span>
+        </div>
+        }
+
+        <form [formGroup]="addForm" (ngSubmit)="submitAdd()" class="add-form">
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="name" placeholder="e.g. Production Alerts" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field form-field-type">
+                    <mat-label>Type</mat-label>
+                    <mat-select formControlName="type">
+                        @for (t of channelTypes; track t) {
+                        <mat-option [value]="t">{{ t }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Webhook URL</mat-label>
+                    <input matInput formControlName="webhookUrl" placeholder="https://hooks.slack.com/..." />
+                </mat-form-field>
+            </div>
+
+            <div class="events-section">
+                <label class="events-label">Events</label>
+                <div class="events-grid">
+                    @for (event of allEvents; track event) {
+                    <mat-checkbox [checked]="isEventSelected(event)" (change)="onEventToggle(event, $event.checked)">
+                        {{ getEventLabel(event) }}
+                    </mat-checkbox>
+                    }
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <mat-slide-toggle [checked]="addFormEnabled()" (change)="addFormEnabled.set($event.checked)">
+                    Enabled
+                </mat-slide-toggle>
+
+                <button class="btn-primary" type="submit"
+                    [disabled]="addForm.invalid || selectedEvents().length === 0 || adding()">
+                    {{ adding() ? 'Adding...' : 'Add Channel' }}
+                </button>
+            </div>
+        </form>
+    </div>
+    }
+</div>

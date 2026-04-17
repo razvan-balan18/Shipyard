@@ -1,0 +1,43 @@
+<p>github-integration works!</p>
+<div class="github-page">
+    <header class="page-header">
+        <h2>GitHub Integration</h2>
+    </header>
+
+    <div class="status-row">
+        <mat-icon class="status-icon">info_outline</mat-icon>
+        <span class="status-text">Not configured</span>
+        <span class="phase-badge">Coming in Phase 4</span>
+    </div>
+
+    <div class="info-card">
+        <h3>What will this do?</h3>
+        <ul class="info-list">
+            <li>
+                <mat-icon>check_circle_outline</mat-icon>
+                <span>Install a GitHub App to connect your repositories</span>
+            </li>
+            <li>
+                <mat-icon>check_circle_outline</mat-icon>
+                <span>Automatically track CI/CD pipeline runs from GitHub Actions webhooks</span>
+            </li>
+            <li>
+                <mat-icon>check_circle_outline</mat-icon>
+                <span>Surface commit, branch, and PR metadata on each deployment</span>
+            </li>
+        </ul>
+
+        <div class="webhook-section">
+            <label class="webhook-label">Webhook URL</label>
+            <div class="webhook-url-row">
+                <code class="webhook-url">{{ webhookUrl }}</code>
+                <button mat-icon-button (click)="copyWebhookUrl()" aria-label="Copy webhook URL" class="copy-btn">
+                    <mat-icon>content_copy</mat-icon>
+                </button>
+            </div>
+            <p class="webhook-hint">
+                This is the URL GitHub will POST webhook events to once the integration is configured.
+            </p>
+        </div>
+    </div>
+</div>
