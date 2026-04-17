@@ -1,0 +1,81 @@
+<p>deployment-timeline works!</p>
+@if (loading() && deployments().length === 0) {
+<app-loading-skeleton [count]="5" />
+} @else if (error() && deployments().length === 0) {
+<div class="error-banner">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error() }}</span>
+    <button mat-button (click)="fetchInitial()">Retry</button>
+</div>
+} @else if (deployments().length === 0 && !loading()) {
+<app-empty-state message="No deployments yet" />
+} @else {
+<div class="timeline">
+    @for (dep of deployments(); track dep.id) {
+    <div class="timeline-item">
+        <div class="timeline-connector">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+        </div>
+
+        <div class="timeline-card">
+            <div class="card-header">
+                <app-status-badge [status]="dep.status" />
+                <span class="env-name">{{
+                    dep.environment.displayName || dep.environment.name
+                    }}</span>
+                <app-time-ago [timestamp]="dep.startedAt" />
+            </div>
+
+            <div class="card-body">
+                <div class="branch-row">
+                    <mat-icon class="row-icon">fork_right</mat-icon>
+                    <span class="branch-name">{{ dep.branch }}</span>
+                    <app-commit-sha [sha]="dep.commitSha" />
+                </div>
+
+                @if (dep.commitMessage) {
+                <p class="commit-message">
+                    {{ dep.commitMessage | slice: 0 : 72
+                    }}{{ dep.commitMessage.length > 72 ? '...' : '' }}
+                </p>
+                }
+
+                <div class="card-footer">
+                    <span class="triggered-by">
+                        <mat-icon class="row-icon">person_outline</mat-icon>
+                        {{ dep.triggeredBy }}
+                    </span>
+
+                    @if (dep.status === SUCCESS) {
+                    <button mat-stroked-button class="rollback-btn" [disabled]="rollingBackId() === dep.id"
+                        (click)="rollback(dep.id)">
+                        @if (rollingBackId() === dep.id) {
+                        <mat-spinner diameter="16" />
+                        } @else {
+                        <mat-icon>replay</mat-icon>
+                        }
+                        Rollback
+                    </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+<!-- Load more -->
+<div class="load-more-container">
+    @if (hasMore()) {
+    <button mat-stroked-button [disabled]="loadingMore()" (click)="loadMore()">
+        @if (loadingMore()) {
+        <mat-spinner diameter="16" />
+        }
+        Load more
+    </button>
+    } @else if (deployments().length > 0) {
+    <span class="no-more">No more deployments</span>
+    }
+</div>
+}

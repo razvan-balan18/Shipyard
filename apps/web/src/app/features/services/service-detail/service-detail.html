@@ -1,0 +1,91 @@
+@if (loading()) {
+<app-loading-skeleton [count]="6" />
+} @else if (error()) {
+<div class="error-banner">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error() }}</span>
+    <button mat-button (click)="reload()">Retry</button>
+</div>
+} @else if (service(); as svc) {
+<div class="detail-page">
+    <!-- Header -->
+    <header class="detail-header">
+        <a routerLink="/services" class="back-link">
+            <mat-icon>arrow_back</mat-icon>
+            Services
+        </a>
+
+        <div class="title-row">
+            <div class="title-info">
+                <h1 class="display-name">{{ svc.displayName || svc.name }}</h1>
+                <span class="service-name">{{ svc.name }}</span>
+            </div>
+            <button mat-icon-button aria-label="Edit service" (click)="onEditClick()">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </div>
+
+        <div class="header-meta">
+            @if (svc.repositoryUrl) {
+            <a [href]="svc.repositoryUrl" target="_blank" rel="noopener noreferrer" class="repo-link">
+                <mat-icon class="meta-icon">code</mat-icon>
+                {{ shortRepo() }}
+            </a>
+            }
+            @if (svc.techStack) {
+            <span class="tech-pill">{{ svc.techStack }}</span>
+            }
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <mat-tab-group animationDuration="200ms">
+        <!-- Environments tab -->
+        <mat-tab label="Environments">
+            <div class="tab-content">
+                @if (svc.environments.length === 0) {
+                <div class="empty-state">
+                    <mat-icon class="empty-icon">dns</mat-icon>
+                    <p>No environments configured for this service.</p>
+                    <button mat-stroked-button (click)="onAddEnvironmentClick()">
+                        <mat-icon>add</mat-icon>
+                        Add Environment
+                    </button>
+                </div>
+                } @else {
+                <div class="env-list">
+                    @for (env of svc.environments; track env.id) {
+                    <div class="env-item">
+                        <app-environment-status [environment]="env" [showLink]="true" />
+                        @if (env.currentDeploymentId) {
+                        <span class="deployment-id">
+                            deploy: {{ env.currentDeploymentId | slice: 0 : 8 }}
+                        </span>
+                        }
+                    </div>
+                    }
+                </div>
+                <button mat-stroked-button class="add-env-btn" (click)="onAddEnvironmentClick()">
+                    <mat-icon>add</mat-icon>
+                    Add Environment
+                </button>
+                }
+            </div>
+        </mat-tab>
+
+        <!-- Deployments tab -->
+        <mat-tab label="Deployments">
+            <div class="tab-content">
+                <app-deployment-timeline [serviceId]="svc.id" />
+            </div>
+        </mat-tab>
+
+        <!-- Pipelines tab -->
+        <mat-tab label="Pipelines">
+            <div class="tab-content">
+                <app-pipeline-runs [serviceId]="svc.id" />
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+}
