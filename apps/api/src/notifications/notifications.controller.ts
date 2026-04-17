@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { NotificationsService } from './notifications.service';
 import {
@@ -20,6 +21,7 @@ import { UserRole } from '../generated/prisma/client';
 import { CreateNotificationChannelDto } from './dto/create-notification-channel.dto';
 import { UpdateNotificationChannelDto } from './dto/update-notification-channel.dto';
 
+@ApiBearerAuth()
 @Controller('api/notifications')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class NotificationsController {

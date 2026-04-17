@@ -34,4 +34,9 @@ export class CreateDeploymentDto {
   @IsUUID()
   @IsOptional()
   pipelineRunId?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(200)
+  triggeredBy?: string;
 }

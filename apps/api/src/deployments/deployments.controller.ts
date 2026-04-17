@@ -8,6 +8,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { DeploymentsService } from './deployments.service';
 import {
@@ -20,6 +21,7 @@ import { DeploymentStatus } from '@shipyard/shared';
 import { CreateDeploymentDto } from './dto/create-deployment.dto';
 import { CompleteDeploymentDto } from './dto/complete-deployment.dto';
 
+@ApiBearerAuth()
 @Controller('api/deployments')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class DeploymentsController {

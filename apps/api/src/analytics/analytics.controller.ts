@@ -1,4 +1,5 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { AnalyticsService } from './analytics.service';
 import {
@@ -7,6 +8,7 @@ import {
 } from '../common/decorators/current-user.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 
+@ApiBearerAuth()
 @Controller('api/analytics')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AnalyticsController {

@@ -1,4 +1,5 @@
 import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { TeamsService } from './teams.service';
 import {
@@ -9,6 +10,7 @@ import { RolesGuard, Roles } from '../common/guards/roles.guard';
 import { UserRole } from '../generated/prisma/client';
 import { UpdateTeamDto } from './dto/update-team.dto';
 
+@ApiBearerAuth()
 @Controller('api/teams')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class TeamsController {

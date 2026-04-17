@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { PipelinesService } from './pipelines.service';
 import {
@@ -7,6 +8,7 @@ import {
 } from '../common/decorators/current-user.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 
+@ApiBearerAuth()
 @Controller('api/pipelines')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class PipelinesController {
