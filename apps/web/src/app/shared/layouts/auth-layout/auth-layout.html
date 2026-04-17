@@ -1,0 +1,24 @@
+<div class="auth-root" [class.dark]="themeService.isDark()">
+    <!-- Blueprint grid background -->
+    <div class="grid-bg" aria-hidden="true"></div>
+
+    <!-- Floating orbs for depth -->
+    <div class="orb orb-1" aria-hidden="true"></div>
+    <div class="orb orb-2" aria-hidden="true"></div>
+
+    <!-- Card -->
+    <div class="auth-card">
+        <!-- Brand header -->
+        <div class="brand">
+            <span class="brand-anchor">⚓</span>
+            <span class="brand-name">SHIPYARD</span>
+        </div>
+
+        <router-outlet />
+    </div>
+
+    <!-- Corner decoration -->
+    <div class="corner-label" aria-hidden="true">
+        <span class="corner-text">DEPLOYMENT_CONTROL_v1</span>
+    </div>
+</div>

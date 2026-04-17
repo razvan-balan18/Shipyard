@@ -1,0 +1,30 @@
+<div class="app-layout" [class.dark]="themeService.isDark()">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-icon">⚓</span>
+            <span class="brand-name">Shipyard</span>
+        </div>
+
+        <ul class="sidebar-nav">
+            <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+            <li><a routerLink="/services" routerLinkActive="active">Services</a></li>
+            <li><a routerLink="/deployments" routerLinkActive="active">Deployments</a></li>
+            <li><a routerLink="/pipelines" routerLinkActive="active">Pipelines</a></li>
+            <li><a routerLink="/environments" routerLinkActive="active">Environments</a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a routerLink="/settings" routerLinkActive="active">Settings</a>
+            <button (click)="themeService.toggle()" class="theme-toggle">
+                {{ themeService.isDark() ? '☀️' : '🌙' }}
+            </button>
+            <button (click)="authService.logout()" class="logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <router-outlet />
+    </main>
+</div>
